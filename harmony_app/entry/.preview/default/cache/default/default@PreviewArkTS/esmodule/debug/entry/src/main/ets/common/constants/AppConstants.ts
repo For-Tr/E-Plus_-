@@ -51,16 +51,28 @@ export enum EmotionType {
     DISGUST = "disgust",
     NEUTRAL = "neutral"
 }
-// 情绪中文映射
-export const EMOTION_NAMES = {
-    'happy': '😊 开心',
-    'sad': '😢 难过',
-    'angry': '😠 生气',
-    'fear': '😨 恐惧',
-    'surprise': '😲 惊讶',
-    'disgust': '🤢 厌恶',
-    'neutral': '😐 平静'
-};
+// 情绪中文映射类
+export class EmotionNames {
+    static readonly happy: string = '😊 开心';
+    static readonly sad: string = '😢 难过';
+    static readonly angry: string = '😠 生气';
+    static readonly fear: string = '😨 恐惧';
+    static readonly surprise: string = '😲 惊讶';
+    static readonly disgust: string = '🤢 厌恶';
+    static readonly neutral: string = '😐 平静';
+    static get(emotion: string): string {
+        switch (emotion) {
+            case 'happy': return this.happy;
+            case 'sad': return this.sad;
+            case 'angry': return this.angry;
+            case 'fear': return this.fear;
+            case 'surprise': return this.surprise;
+            case 'disgust': return this.disgust;
+            case 'neutral': return this.neutral;
+            default: return this.neutral;
+        }
+    }
+}
 // 错误消息
 export class ErrorMessages {
     static readonly NETWORK_ERROR = '网络连接失败,请检查网络设置';

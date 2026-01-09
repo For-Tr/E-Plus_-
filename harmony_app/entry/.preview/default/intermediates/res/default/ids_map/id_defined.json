@@ -47,5 +47,33 @@
 			"type":	"color",
 			"name":	"start_window_background",
 			"id":	"0x0100000B"
+		}, {
+			"type":	"media",
+			"name":	"history_icon",
+			"id":	"0x0100000C"
+		}, {
+			"type":	"media",
+			"name":	"back",
+			"id":	"0x0100000D"
+		}, {
+			"type":	"media",
+			"name":	"empty",
+			"id":	"0x0100000E"
+		}, {
+			"type":	"media",
+			"name":	"face_guide",
+			"id":	"0x0100000F"
+		}, {
+			"type":	"media",
+			"name":	"checkin_icon",
+			"id":	"0x01000010"
+		}, {
+			"type":	"media",
+			"name":	"default_avatar",
+			"id":	"0x01000011"
+		}, {
+			"type":	"media",
+			"name":	"face_icon",
+			"id":	"0x01000012"
 		}]
 }

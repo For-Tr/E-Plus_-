@@ -5,7 +5,7 @@ import router from '@ohos.router'
 import promptAction from '@ohos.promptAction'
 import HttpUtil from '../common/utils/HttpUtil'
 import StorageUtil from '../common/utils/StorageUtil'
-import { ApiEndpoints, StorageKeys, AppConfig, EMOTION_NAMES } from '../common/constants/AppConstants'
+import { ApiEndpoints, StorageKeys, AppConfig, EmotionNames } from '../common/constants/AppConstants'
 import { User } from '../models/User'
 import { CheckinTaskListResponse } from '../models/CheckinTask'
 

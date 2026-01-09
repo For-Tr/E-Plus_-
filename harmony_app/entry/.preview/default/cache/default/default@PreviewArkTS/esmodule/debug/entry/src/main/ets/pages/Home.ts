@@ -164,7 +164,7 @@ class Home extends ViewPU {
         }, Row);
         this.observeComponentCreation2((elmtId, isInitialRender) => {
             // 用户头像
-            Image.create($r('app.media.default_avatar'));
+            Image.create({ "id": 16777233, "type": 20000, params: [], "bundleName": "com.family.emotion", "moduleName": "entry" });
             Image.debugLine("entry/src/main/ets/pages/Home.ets(103:9)", "entry");
             // 用户头像
             Image.width(50);
@@ -266,7 +266,7 @@ class Home extends ViewPU {
             Column.margin({ top: 40 });
         }, Column);
         this.observeComponentCreation2((elmtId, isInitialRender) => {
-            Image.create($r('app.media.checkin_icon'));
+            Image.create({ "id": 16777232, "type": 20000, params: [], "bundleName": "com.family.emotion", "moduleName": "entry" });
             Image.debugLine("entry/src/main/ets/pages/Home.ets(145:11)", "entry");
             Image.width(80);
             Image.height(80);
@@ -325,7 +325,7 @@ class Home extends ViewPU {
             });
         }, Column);
         this.observeComponentCreation2((elmtId, isInitialRender) => {
-            Image.create($r('app.media.history_icon'));
+            Image.create({ "id": 16777228, "type": 20000, params: [], "bundleName": "com.family.emotion", "moduleName": "entry" });
             Image.debugLine("entry/src/main/ets/pages/Home.ets(180:13)", "entry");
             Image.width(40);
             Image.height(40);
@@ -372,7 +372,7 @@ class Home extends ViewPU {
             });
         }, Column);
         this.observeComponentCreation2((elmtId, isInitialRender) => {
-            Image.create($r('app.media.face_icon'));
+            Image.create({ "id": 16777234, "type": 20000, params: [], "bundleName": "com.family.emotion", "moduleName": "entry" });
             Image.debugLine("entry/src/main/ets/pages/Home.ets(207:13)", "entry");
             Image.width(40);
             Image.height(40);

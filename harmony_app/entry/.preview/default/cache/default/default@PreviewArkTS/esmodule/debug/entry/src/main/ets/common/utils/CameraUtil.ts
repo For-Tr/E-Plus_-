@@ -1,8 +1,6 @@
-import camera from "@ohos:multimedia.camera";
-import image from "@ohos:multimedia.image";
+import type { BusinessError } from "@ohos:base";
 class CameraUtil {
-    private static instance: CameraUtil;
-    private cameraManager: camera.CameraManager | null = null;
+    private static instance: CameraUtil | null = null;
     private constructor() { }
     public static getInstance(): CameraUtil {
         if (!CameraUtil.instance) {
@@ -11,116 +9,62 @@ class CameraUtil {
         return CameraUtil.instance;
     }
     /**
-     * 初始化相机管理器
+     * 选择照片并转换为Base64
+     * 注意：实际应用中应该使用相机组件直接拍照
      */
-    async init(context: Context): Promise<boolean> {
+    async selectPhotoAsBase64(): Promise<string | null> {
         try {
-            this.cameraManager = camera.getCameraManager(context);
-            console.info('[CameraUtil] Camera manager initialized');
-            return true;
+            console.info('[CameraUtil] Selecting photo...');
+            // 这里应该使用相机组件拍照
+            // 目前返回null，需要在页面中使用Camera组件实现
+            console.warn('[CameraUtil] Please use Camera component in page for actual photo capture');
+            return null;
         }
         catch (error) {
-            console.error('[CameraUtil] Init failed:', JSON.stringify(error));
-            return false;
-        }
-    }
-    /**
-     * 拍照并转换为Base64
-     */
-    async takePictureAsBase64(): Promise<string | null> {
-        try {
-            if (!this.cameraManager) {
-                console.error('[CameraUtil] Camera manager not initialized');
-                return null;
-            }
-            // 获取相机列表
-            const cameras = this.cameraManager.getSupportedCameras();
-            if (cameras.length === 0) {
-                console.error('[CameraUtil] No camera available');
-                return null;
-            }
-            // 使用前置摄像头(用于人脸识别)
-            const frontCamera = cameras.find(cam => cam.cameraPosition === camera.CameraPosition.CAMERA_POSITION_FRONT);
-            const targetCamera = frontCamera || cameras[0];
-            console.info(`[CameraUtil] Using camera: ${targetCamera.cameraId}`);
-            // 创建相机输入
-            const cameraInput = this.cameraManager.createCameraInput(targetCamera);
-            await cameraInput.open();
-            // 创建预览输出和拍照输出
-            const previewOutput = this.cameraManager.createPreviewOutput();
-            const photoOutput = this.cameraManager.createPhotoOutput();
-            // 创建捕获会话
-            const captureSession = this.cameraManager.createCaptureSession();
-            await captureSession.beginConfig();
-            captureSession.addInput(cameraInput);
-            captureSession.addOutput(previewOutput);
-            captureSession.addOutput(photoOutput);
-            await captureSession.commitConfig();
-            await captureSession.start();
-            // 拍照
-            return new Promise((resolve, reject) => {
-                photoOutput.on('photoAvailable', async (photo) => {
-                    try {
-                        // 获取图片缓冲区
-                        const imageBuffer = await photo.main.getComponent(image.ComponentType.JPEG);
-                        if (!imageBuffer || !imageBuffer.byteBuffer) {
-                            reject(new Error('Failed to get image buffer'));
-                            return;
-                        }
-                        // 转换为Base64
-                        const base64String = this.arrayBufferToBase64(imageBuffer.byteBuffer);
-                        // 清理资源
-                        await captureSession.stop();
-                        await captureSession.release();
-                        await cameraInput.close();
-                        resolve(base64String);
-                    }
-                    catch (error) {
-                        console.error('[CameraUtil] Photo process error:', JSON.stringify(error));
-                        reject(error);
-                    }
-                });
-                // 触发拍照
-                photoOutput.capture().catch(error => {
-                    console.error('[CameraUtil] Capture error:', JSON.stringify(error));
-                    reject(error);
-                });
-                // 超时处理
-                setTimeout(() => {
-                    reject(new Error('Capture timeout'));
-                }, 10000);
-            });
-        }
-        catch (error) {
-            console.error('[CameraUtil] Take picture failed:', JSON.stringify(error));
+            const err = error as BusinessError;
+            console.error(`[CameraUtil] Select photo failed: ${err.code}, ${err.message}`);
             return null;
         }
     }
     /**
-     * ArrayBuffer转Base64
+     * 将ArrayBuffer转换为Base64字符串
      */
-    private arrayBufferToBase64(buffer: ArrayBuffer): string {
-        let binary = '';
+    arrayBufferToBase64(buffer: ArrayBuffer): string {
         const bytes = new Uint8Array(buffer);
-        const len = bytes.byteLength;
-        for (let i = 0; i < len; i++) {
+        let binary = '';
+        for (let i = 0; i < bytes.byteLength; i++) {
             binary += String.fromCharCode(bytes[i]);
         }
-        return btoa(binary);
+        // 使用util.Base64辅助类进行编码
+        return this.base64Encode(binary);
     }
     /**
-     * 压缩图片
+     * 简单的Base64编码实现
      */
-    async compressImage(base64String: string, quality: number = 80): Promise<string> {
-        try {
-            // 简化版本:实际应用中可以使用image模块进行压缩
-            // 这里直接返回原图
-            return base64String;
+    private base64Encode(str: string): string {
+        const keyStr = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=';
+        let output = '';
+        let chr1: number, chr2: number, chr3: number;
+        let enc1: number, enc2: number, enc3: number, enc4: number;
+        let i = 0;
+        while (i < str.length) {
+            chr1 = str.charCodeAt(i++);
+            chr2 = i < str.length ? str.charCodeAt(i++) : Number.NaN;
+            chr3 = i < str.length ? str.charCodeAt(i++) : Number.NaN;
+            enc1 = chr1 >> 2;
+            enc2 = ((chr1 & 3) << 4) | (chr2 >> 4);
+            enc3 = ((chr2 & 15) << 2) | (chr3 >> 6);
+            enc4 = chr3 & 63;
+            if (isNaN(chr2)) {
+                enc3 = enc4 = 64;
+            }
+            else if (isNaN(chr3)) {
+                enc4 = 64;
+            }
+            output += keyStr.charAt(enc1) + keyStr.charAt(enc2) +
+                keyStr.charAt(enc3) + keyStr.charAt(enc4);
         }
-        catch (error) {
-            console.error('[CameraUtil] Compress error:', JSON.stringify(error));
-            return base64String;
-        }
+        return output;
     }
 }
 export default CameraUtil.getInstance();

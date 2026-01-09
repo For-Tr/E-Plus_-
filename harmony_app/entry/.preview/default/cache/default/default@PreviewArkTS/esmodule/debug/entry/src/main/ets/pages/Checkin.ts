@@ -4,7 +4,7 @@ if (!("finalizeConstruction" in ViewPU.prototype)) {
 interface Checkin_Params {
     isLoading?: boolean;
     message?: string;
-    currentTask?: any;
+    currentTask?: CheckinTask | null;
     capturedImage?: string;
     checkinResult?: CheckinRecord | null;
     step?: number;
@@ -13,8 +13,8 @@ import router from "@ohos:router";
 import promptAction from "@ohos:promptAction";
 import HttpUtil from "@bundle:com.family.emotion/entry/ets/common/utils/HttpUtil";
 import CameraUtil from "@bundle:com.family.emotion/entry/ets/common/utils/CameraUtil";
-import { ApiEndpoints, EMOTION_NAMES, ErrorMessages } from "@bundle:com.family.emotion/entry/ets/common/constants/AppConstants";
-import type { CheckinTaskListResponse } from '../models/CheckinTask';
+import { ApiEndpoints, EmotionNames, ErrorMessages } from "@bundle:com.family.emotion/entry/ets/common/constants/AppConstants";
+import type { CheckinTask, CheckinTaskListResponse } from '../models/CheckinTask';
 import type { CheckinCreateRequest, CheckinRecord } from '../models/CheckinRecord';
 class Checkin extends ViewPU {
     constructor(parent, params, __localStorage, elmtId = -1, paramsLambda = undefined, extraInfo) {
@@ -86,11 +86,11 @@ class Checkin extends ViewPU {
     set message(newValue: string) {
         this.__message.set(newValue);
     }
-    private __currentTask: ObservedPropertyObjectPU<any>;
+    private __currentTask: ObservedPropertyObjectPU<CheckinTask | null>;
     get currentTask() {
         return this.__currentTask.get();
     }
-    set currentTask(newValue: any) {
+    set currentTask(newValue: CheckinTask | null) {
         this.__currentTask.set(newValue);
     }
     private __capturedImage: ObservedPropertySimplePU<string>;
@@ -254,7 +254,7 @@ class Checkin extends ViewPU {
             Row.backgroundColor('#FFFFFF');
         }, Row);
         this.observeComponentCreation2((elmtId, isInitialRender) => {
-            Image.create($r('app.media.back'));
+            Image.create({ "id": 16777229, "type": 20000, params: [], "bundleName": "com.family.emotion", "moduleName": "entry" });
             Image.debugLine("entry/src/main/ets/pages/Checkin.ets(153:9)", "entry");
             Image.width(24);
             Image.height(24);
@@ -306,7 +306,7 @@ class Checkin extends ViewPU {
                         Column.width('100%');
                     }, Column);
                     this.observeComponentCreation2((elmtId, isInitialRender) => {
-                        Image.create($r('app.media.checkin_icon'));
+                        Image.create({ "id": 16777232, "type": 20000, params: [], "bundleName": "com.family.emotion", "moduleName": "entry" });
                         Image.debugLine("entry/src/main/ets/pages/Checkin.ets(182:13)", "entry");
                         Image.width(100);
                         Image.height(100);
@@ -578,7 +578,7 @@ class Checkin extends ViewPU {
                                 }, Blank);
                                 Blank.pop();
                                 this.observeComponentCreation2((elmtId, isInitialRender) => {
-                                    Text.create(EMOTION_NAMES[this.checkinResult.emotion] || this.checkinResult.emotion);
+                                    Text.create(EmotionNames.get(this.checkinResult.emotion));
                                     Text.debugLine("entry/src/main/ets/pages/Checkin.ets(319:19)", "entry");
                                     Text.fontSize(20);
                                     Text.fontWeight(FontWeight.Medium);

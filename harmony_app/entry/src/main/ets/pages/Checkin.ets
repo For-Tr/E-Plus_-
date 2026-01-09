@@ -99,6 +99,11 @@ struct Checkin {
     this.message = '正在识别人脸和情绪...'
 
     try {
+      if (!this.currentTask) {
+        this.message = '任务信息丢失,请返回重试'
+        return
+      }
+
       const requestData: CheckinCreateRequest = {
         task_id: this.currentTask.id,
         photo: this.capturedImage

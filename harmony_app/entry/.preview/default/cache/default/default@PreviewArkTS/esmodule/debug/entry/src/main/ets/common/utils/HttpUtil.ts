@@ -1,20 +1,33 @@
 import http from "@ohos:net.http";
 import { API_BASE_URL, API_TIMEOUT, StorageKeys } from "@bundle:com.family.emotion/entry/ets/common/constants/AppConstants";
 import StorageUtil from "@bundle:com.family.emotion/entry/ets/common/utils/StorageUtil";
+// 定义请求头类型
+class RequestHeaders {
+    'Content-Type': string = 'application/json';
+    'Authorization'?: string;
+}
+// 定义请求选项接口
 interface RequestOptions {
-    method?: 'GET' | 'POST' | 'PUT' | 'DELETE';
-    headers?: object;
-    body?: object | string;
+    method?: http.RequestMethod;
+    headers?: Record<string, string>;
+    body?: any;
     needAuth?: boolean;
 }
-interface ApiResponse<T = any> {
+// 定义API响应接口
+interface ApiResponse<T> {
     success: boolean;
     data?: T;
     error?: string;
     status?: number;
 }
+// 定义响应数据接口
+interface ResponseData {
+    access?: string;
+    error?: string;
+    message?: string;
+}
 class HttpUtil {
-    private static instance: HttpUtil;
+    private static instance: HttpUtil | null = null;
     private constructor() { }
     public static getInstance(): HttpUtil {
         if (!HttpUtil.instance) {
@@ -25,18 +38,24 @@ class HttpUtil {
     /**
      * 发送HTTP请求
      */
-    async request<T = any>(url: string, options: RequestOptions = {}): Promise<ApiResponse<T>> {
-        const { method = 'GET', headers = {}, body = null, needAuth = true } = options;
+    async request<T>(url: string, options: RequestOptions): Promise<ApiResponse<T>> {
+        const method = options.method ?? http.RequestMethod.GET;
+        const headers = options.headers ?? {};
+        const body = options.body ?? null;
+        const needAuth = options.needAuth ?? true;
         try {
             // 创建HTTP请求
             const httpRequest = http.createHttp();
             // 构建完整URL
             const fullUrl = url.startsWith('http') ? url : `${API_BASE_URL}${url}`;
             // 构建请求头
-            const requestHeaders = {
-                'Content-Type': 'application/json',
-                ...headers
+            const requestHeaders: Record<string, string> = {
+                'Content-Type': 'application/json'
             };
+            // 合并自定义头
+            Object.keys(headers).forEach((key: string) => {
+                requestHeaders[key] = headers[key];
+            });
             // 如果需要认证,添加Token
             if (needAuth) {
                 const token = await StorageUtil.getString(StorageKeys.ACCESS_TOKEN);
@@ -46,30 +65,26 @@ class HttpUtil {
             }
             // 构建请求选项
             const requestOptions: http.HttpRequestOptions = {
-                method: method as http.RequestMethod,
+                method: method,
                 header: requestHeaders,
                 readTimeout: API_TIMEOUT,
                 connectTimeout: API_TIMEOUT,
-                extraData: body ? (typeof body === 'string' ? body : JSON.stringify(body)) : undefined
+                extraData: body ? JSON.stringify(body) : undefined
             };
             console.info(`[HttpUtil] Request: ${method} ${fullUrl}`);
-            if (body) {
-                console.info(`[HttpUtil] Body:`, JSON.stringify(body));
-            }
             // 发送请求
             const response = await httpRequest.request(fullUrl, requestOptions);
             console.info(`[HttpUtil] Response status: ${response.responseCode}`);
-            console.info(`[HttpUtil] Response data:`, JSON.stringify(response.result));
             // 销毁请求对象
             httpRequest.destroy();
             // 处理响应
             if (response.responseCode === 200 || response.responseCode === 201) {
-                const data = typeof response.result === 'string'
-                    ? JSON.parse(response.result)
-                    : response.result;
+                const data: T = typeof response.result === 'string'
+                    ? JSON.parse(response.result as string) as T
+                    : response.result as T;
                 return {
                     success: true,
-                    data: data as T,
+                    data: data,
                     status: response.responseCode
                 };
             }
@@ -90,9 +105,9 @@ class HttpUtil {
                 }
             }
             else {
-                const errorData = typeof response.result === 'string'
-                    ? JSON.parse(response.result)
-                    : response.result;
+                const errorData: ResponseData = typeof response.result === 'string'
+                    ? JSON.parse(response.result as string) as ResponseData
+                    : response.result as ResponseData;
                 return {
                     success: false,
                     error: errorData?.error || errorData?.message || '请求失败',
@@ -111,26 +126,26 @@ class HttpUtil {
     /**
      * GET请求
      */
-    async get<T = any>(url: string, needAuth: boolean = true): Promise<ApiResponse<T>> {
-        return await this.request<T>(url, { method: 'GET', needAuth });
+    async get<T>(url: string, needAuth: boolean = true): Promise<ApiResponse<T>> {
+        return await this.request<T>(url, { method: http.RequestMethod.GET, needAuth: needAuth });
     }
     /**
      * POST请求
      */
-    async post<T = any>(url: string, body?: object, needAuth: boolean = true): Promise<ApiResponse<T>> {
-        return await this.request<T>(url, { method: 'POST', body, needAuth });
+    async post<T>(url: string, body: any, needAuth: boolean = true): Promise<ApiResponse<T>> {
+        return await this.request<T>(url, { method: http.RequestMethod.POST, body: body, needAuth: needAuth });
     }
     /**
      * PUT请求
      */
-    async put<T = any>(url: string, body?: object, needAuth: boolean = true): Promise<ApiResponse<T>> {
-        return await this.request<T>(url, { method: 'PUT', body, needAuth });
+    async put<T>(url: string, body: any, needAuth: boolean = true): Promise<ApiResponse<T>> {
+        return await this.request<T>(url, { method: http.RequestMethod.PUT, body: body, needAuth: needAuth });
     }
     /**
      * DELETE请求
      */
-    async delete<T = any>(url: string, needAuth: boolean = true): Promise<ApiResponse<T>> {
-        return await this.request<T>(url, { method: 'DELETE', needAuth });
+    async delete<T>(url: string, needAuth: boolean = true): Promise<ApiResponse<T>> {
+        return await this.request<T>(url, { method: http.RequestMethod.DELETE, needAuth: needAuth });
     }
     /**
      * 刷新Token
@@ -141,10 +156,11 @@ class HttpUtil {
             if (!refreshToken) {
                 return false;
             }
-            const response = await this.post('/api/v1/auth/refresh/', {
-                refresh: refreshToken
-            }, false);
-            if (response.success && response.data) {
+            const body: any = {
+                'refresh': refreshToken
+            };
+            const response = await this.post<ResponseData>('/api/v1/auth/refresh/', body, false);
+            if (response.success && response.data && response.data.access) {
                 await StorageUtil.setString(StorageKeys.ACCESS_TOKEN, response.data.access);
                 console.info('[HttpUtil] Token refreshed successfully');
                 return true;
@@ -159,12 +175,11 @@ class HttpUtil {
     /**
      * 上传图片(Base64)
      */
-    async uploadImage(url: string, imageBase64: string, fieldName: string = 'photo'): Promise<ApiResponse> {
+    async uploadImage(url: string, imageBase64: string, fieldName: string = 'photo'): Promise<ApiResponse<any>> {
         try {
-            const token = await StorageUtil.getString(StorageKeys.ACCESS_TOKEN);
-            const body = {};
+            const body: any = {};
             body[fieldName] = imageBase64;
-            return await this.post(url, body, true);
+            return await this.post<any>(url, body, true);
         }
         catch (error) {
             console.error('[HttpUtil] Upload image failed:', JSON.stringify(error));

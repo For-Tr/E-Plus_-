@@ -8,5 +8,12 @@ string permission_internet_reason 0x01000007
 string permission_media_reason 0x01000008
 color start_window_background 0x0100000b
 media app_icon 0x01000000
+media back 0x0100000d
+media checkin_icon 0x01000010
+media default_avatar 0x01000011
+media empty 0x0100000e
+media face_guide 0x0100000f
+media face_icon 0x01000012
+media history_icon 0x0100000c
 media icon 0x0100000a
 profile main_pages 0x01000009

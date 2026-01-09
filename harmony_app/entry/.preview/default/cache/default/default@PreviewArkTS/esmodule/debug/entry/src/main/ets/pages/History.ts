@@ -11,7 +11,7 @@ interface History_Params {
 import router from "@ohos:router";
 import promptAction from "@ohos:promptAction";
 import HttpUtil from "@bundle:com.family.emotion/entry/ets/common/utils/HttpUtil";
-import { ApiEndpoints, EMOTION_NAMES, ErrorMessages } from "@bundle:com.family.emotion/entry/ets/common/constants/AppConstants";
+import { ApiEndpoints, EmotionNames, ErrorMessages } from "@bundle:com.family.emotion/entry/ets/common/constants/AppConstants";
 import type { CheckinRecordListResponse, CheckinRecord } from '../models/CheckinRecord';
 class History extends ViewPU {
     constructor(parent, params, __localStorage, elmtId = -1, paramsLambda = undefined, extraInfo) {
@@ -192,7 +192,7 @@ class History extends ViewPU {
             Row.backgroundColor('#FFFFFF');
         }, Row);
         this.observeComponentCreation2((elmtId, isInitialRender) => {
-            Image.create($r('app.media.back'));
+            Image.create({ "id": 16777229, "type": 20000, params: [], "bundleName": "com.family.emotion", "moduleName": "entry" });
             Image.debugLine("entry/src/main/ets/pages/History.ets(101:9)", "entry");
             Image.width(24);
             Image.height(24);
@@ -345,7 +345,7 @@ class History extends ViewPU {
                                         if (record.emotion) {
                                             this.ifElseBranchUpdateFunction(0, () => {
                                                 this.observeComponentCreation2((elmtId, isInitialRender) => {
-                                                    Text.create(EMOTION_NAMES[record.emotion] || record.emotion);
+                                                    Text.create(EmotionNames.get(record.emotion));
                                                     Text.debugLine("entry/src/main/ets/pages/History.ets(165:23)", "entry");
                                                     Text.fontSize(20);
                                                 }, Text);
@@ -530,7 +530,7 @@ class History extends ViewPU {
                         Column.backgroundColor('#F5F5F5');
                     }, Column);
                     this.observeComponentCreation2((elmtId, isInitialRender) => {
-                        Image.create($r('app.media.empty'));
+                        Image.create({ "id": 16777230, "type": 20000, params: [], "bundleName": "com.family.emotion", "moduleName": "entry" });
                         Image.debugLine("entry/src/main/ets/pages/History.ets(258:11)", "entry");
                         Image.width(150);
                         Image.height(150);

@@ -95,7 +95,10 @@ class Index extends ViewPU {
         this.message = '登录中...';
         try {
             // 调用邀请码登录API
-            const response = await HttpUtil.post<LoginResponse>(ApiEndpoints.INVITE_LOGIN, { invite_code: this.inviteCode.trim().toUpperCase() }, false // 登录时不需要Token
+            const requestBody: any = {
+                'invite_code': this.inviteCode.trim().toUpperCase()
+            };
+            const response = await HttpUtil.post<LoginResponse>(ApiEndpoints.INVITE_LOGIN, requestBody, false // 登录时不需要Token
             );
             if (response.success && response.data) {
                 // 保存登录信息
@@ -152,7 +155,7 @@ class Index extends ViewPU {
     initialRender() {
         this.observeComponentCreation2((elmtId, isInitialRender) => {
             Column.create();
-            Column.debugLine("entry/src/main/ets/pages/Index.ets(105:5)", "entry");
+            Column.debugLine("entry/src/main/ets/pages/Index.ets(108:5)", "entry");
             Column.width('100%');
             Column.height('100%');
             Column.backgroundColor('#F5F5F5');
@@ -160,20 +163,20 @@ class Index extends ViewPU {
         this.observeComponentCreation2((elmtId, isInitialRender) => {
             // 顶部Logo和标题
             Column.create();
-            Column.debugLine("entry/src/main/ets/pages/Index.ets(107:7)", "entry");
+            Column.debugLine("entry/src/main/ets/pages/Index.ets(110:7)", "entry");
             // 顶部Logo和标题
             Column.margin({ top: 80 });
         }, Column);
         this.observeComponentCreation2((elmtId, isInitialRender) => {
             Image.create({ "id": 16777216, "type": 20000, params: [], "bundleName": "com.family.emotion", "moduleName": "entry" });
-            Image.debugLine("entry/src/main/ets/pages/Index.ets(108:9)", "entry");
+            Image.debugLine("entry/src/main/ets/pages/Index.ets(111:9)", "entry");
             Image.width(100);
             Image.height(100);
             Image.margin({ bottom: 20 });
         }, Image);
         this.observeComponentCreation2((elmtId, isInitialRender) => {
             Text.create(AppConfig.APP_NAME);
-            Text.debugLine("entry/src/main/ets/pages/Index.ets(113:9)", "entry");
+            Text.debugLine("entry/src/main/ets/pages/Index.ets(116:9)", "entry");
             Text.fontSize(28);
             Text.fontWeight(FontWeight.Bold);
             Text.fontColor('#333');
@@ -182,7 +185,7 @@ class Index extends ViewPU {
         Text.pop();
         this.observeComponentCreation2((elmtId, isInitialRender) => {
             Text.create('用AI守护家人的心理健康');
-            Text.debugLine("entry/src/main/ets/pages/Index.ets(119:9)", "entry");
+            Text.debugLine("entry/src/main/ets/pages/Index.ets(122:9)", "entry");
             Text.fontSize(16);
             Text.fontColor('#666');
             Text.margin({ bottom: 40 });
@@ -193,7 +196,7 @@ class Index extends ViewPU {
         this.observeComponentCreation2((elmtId, isInitialRender) => {
             // 邀请码输入区域
             Column.create();
-            Column.debugLine("entry/src/main/ets/pages/Index.ets(127:7)", "entry");
+            Column.debugLine("entry/src/main/ets/pages/Index.ets(130:7)", "entry");
             // 邀请码输入区域
             Column.width('85%');
             // 邀请码输入区域
@@ -212,7 +215,7 @@ class Index extends ViewPU {
         }, Column);
         this.observeComponentCreation2((elmtId, isInitialRender) => {
             Text.create('请输入邀请码');
-            Text.debugLine("entry/src/main/ets/pages/Index.ets(128:9)", "entry");
+            Text.debugLine("entry/src/main/ets/pages/Index.ets(131:9)", "entry");
             Text.fontSize(18);
             Text.fontWeight(FontWeight.Medium);
             Text.fontColor('#333');
@@ -222,7 +225,7 @@ class Index extends ViewPU {
         Text.pop();
         this.observeComponentCreation2((elmtId, isInitialRender) => {
             TextInput.create({ placeholder: '请输入8位邀请码', text: this.inviteCode });
-            TextInput.debugLine("entry/src/main/ets/pages/Index.ets(135:9)", "entry");
+            TextInput.debugLine("entry/src/main/ets/pages/Index.ets(138:9)", "entry");
             TextInput.height(50);
             TextInput.fontSize(16);
             TextInput.maxLength(8);
@@ -239,7 +242,7 @@ class Index extends ViewPU {
         this.observeComponentCreation2((elmtId, isInitialRender) => {
             // 登录按钮
             Button.createWithLabel(this.isLoading ? '登录中...' : '登录');
-            Button.debugLine("entry/src/main/ets/pages/Index.ets(150:9)", "entry");
+            Button.debugLine("entry/src/main/ets/pages/Index.ets(153:9)", "entry");
             // 登录按钮
             Button.width('100%');
             // 登录按钮
@@ -268,7 +271,7 @@ class Index extends ViewPU {
                 this.ifElseBranchUpdateFunction(0, () => {
                     this.observeComponentCreation2((elmtId, isInitialRender) => {
                         Text.create(this.message);
-                        Text.debugLine("entry/src/main/ets/pages/Index.ets(164:11)", "entry");
+                        Text.debugLine("entry/src/main/ets/pages/Index.ets(167:11)", "entry");
                         Text.fontSize(14);
                         Text.fontColor('#FF0000');
                         Text.margin({ top: 15 });
@@ -287,7 +290,7 @@ class Index extends ViewPU {
         this.observeComponentCreation2((elmtId, isInitialRender) => {
             // 说明文字
             Column.create();
-            Column.debugLine("entry/src/main/ets/pages/Index.ets(182:7)", "entry");
+            Column.debugLine("entry/src/main/ets/pages/Index.ets(185:7)", "entry");
             // 说明文字
             Column.margin({ top: 40 });
             // 说明文字
@@ -295,7 +298,7 @@ class Index extends ViewPU {
         }, Column);
         this.observeComponentCreation2((elmtId, isInitialRender) => {
             Text.create('如何获取邀请码?');
-            Text.debugLine("entry/src/main/ets/pages/Index.ets(183:9)", "entry");
+            Text.debugLine("entry/src/main/ets/pages/Index.ets(186:9)", "entry");
             Text.fontSize(16);
             Text.fontWeight(FontWeight.Medium);
             Text.fontColor('#333');
@@ -304,7 +307,7 @@ class Index extends ViewPU {
         Text.pop();
         this.observeComponentCreation2((elmtId, isInitialRender) => {
             Text.create('1. 请联系家庭管理员');
-            Text.debugLine("entry/src/main/ets/pages/Index.ets(189:9)", "entry");
+            Text.debugLine("entry/src/main/ets/pages/Index.ets(192:9)", "entry");
             Text.fontSize(14);
             Text.fontColor('#666');
             Text.margin({ bottom: 5 });
@@ -312,7 +315,7 @@ class Index extends ViewPU {
         Text.pop();
         this.observeComponentCreation2((elmtId, isInitialRender) => {
             Text.create('2. 管理员在Web管理界面生成邀请码');
-            Text.debugLine("entry/src/main/ets/pages/Index.ets(194:9)", "entry");
+            Text.debugLine("entry/src/main/ets/pages/Index.ets(197:9)", "entry");
             Text.fontSize(14);
             Text.fontColor('#666');
             Text.margin({ bottom: 5 });
@@ -320,7 +323,7 @@ class Index extends ViewPU {
         Text.pop();
         this.observeComponentCreation2((elmtId, isInitialRender) => {
             Text.create('3. 使用邀请码即可登录');
-            Text.debugLine("entry/src/main/ets/pages/Index.ets(199:9)", "entry");
+            Text.debugLine("entry/src/main/ets/pages/Index.ets(202:9)", "entry");
             Text.fontSize(14);
             Text.fontColor('#666');
         }, Text);
@@ -329,13 +332,13 @@ class Index extends ViewPU {
         Column.pop();
         this.observeComponentCreation2((elmtId, isInitialRender) => {
             Blank.create();
-            Blank.debugLine("entry/src/main/ets/pages/Index.ets(206:7)", "entry");
+            Blank.debugLine("entry/src/main/ets/pages/Index.ets(209:7)", "entry");
         }, Blank);
         Blank.pop();
         this.observeComponentCreation2((elmtId, isInitialRender) => {
             // 底部版本信息
             Text.create(`版本 ${AppConfig.APP_VERSION}`);
-            Text.debugLine("entry/src/main/ets/pages/Index.ets(209:7)", "entry");
+            Text.debugLine("entry/src/main/ets/pages/Index.ets(212:7)", "entry");
             // 底部版本信息
             Text.fontSize(12);
             // 底部版本信息

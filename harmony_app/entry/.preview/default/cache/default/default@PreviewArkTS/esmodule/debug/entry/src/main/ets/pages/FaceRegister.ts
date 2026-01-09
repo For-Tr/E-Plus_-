@@ -246,7 +246,7 @@ class FaceRegister extends ViewPU {
                         Column.padding(30);
                     }, Column);
                     this.observeComponentCreation2((elmtId, isInitialRender) => {
-                        Image.create($r('app.media.face_guide'));
+                        Image.create({ "id": 16777231, "type": 20000, params: [], "bundleName": "com.family.emotion", "moduleName": "entry" });
                         Image.debugLine("entry/src/main/ets/pages/FaceRegister.ets(156:13)", "entry");
                         Image.width(200);
                         Image.height(200);

@@ -19,12 +19,20 @@ class CameraUtil {
   }
 
   /**
-   * 选择照片并转换为Base64
+   * 初始化相机（占位方法）
+   */
+  async init(context: Context): Promise<boolean> {
+    console.info('[CameraUtil] Camera init (placeholder)')
+    return true
+  }
+
+  /**
+   * 拍照并转换为Base64（占位方法）
    * 注意：实际应用中应该使用相机组件直接拍照
    */
-  async selectPhotoAsBase64(): Promise<string | null> {
+  async takePictureAsBase64(): Promise<string | null> {
     try {
-      console.info('[CameraUtil] Selecting photo...')
+      console.info('[CameraUtil] Taking picture...')
       
       // 这里应该使用相机组件拍照
       // 目前返回null，需要在页面中使用Camera组件实现
@@ -32,9 +40,17 @@ class CameraUtil {
       return null
     } catch (error) {
       const err = error as BusinessError
-      console.error(`[CameraUtil] Select photo failed: ${err.code}, ${err.message}`)
+      console.error(`[CameraUtil] Take picture failed: ${err.code}, ${err.message}`)
       return null
     }
+  }
+
+  /**
+   * 选择照片并转换为Base64
+   * 注意：实际应用中应该使用相机组件直接拍照
+   */
+  async selectPhotoAsBase64(): Promise<string | null> {
+    return await this.takePictureAsBase64()
   }
 
   /**

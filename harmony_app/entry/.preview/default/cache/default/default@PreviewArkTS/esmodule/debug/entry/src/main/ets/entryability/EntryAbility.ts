@@ -1,9 +1,11 @@
 import UIAbility from "@ohos:app.ability.UIAbility";
 import hilog from "@ohos:hilog";
 import type window from "@ohos:window";
+import type Want from "@ohos:app.ability.Want";
+import type AbilityConstant from "@ohos:app.ability.AbilityConstant";
 import StorageUtil from "@bundle:com.family.emotion/entry/ets/common/utils/StorageUtil";
 export default class EntryAbility extends UIAbility {
-    onCreate(want, launchParam) {
+    onCreate(want: Want, launchParam: AbilityConstant.LaunchParam): void {
         hilog.info(0x0000, 'FamilyEmotion', '%{public}s', 'Ability onCreate');
         // 初始化本地存储
         StorageUtil.init(this.context);
