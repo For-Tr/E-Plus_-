@@ -7,7 +7,7 @@
     "icon": "$media:app_icon",
     "label": "$string:app_name",
     "compileSdkVersion": 9,
-    "compatibleSdkVersion": 9,
-    "targetSdkVersion": 9
+    "compatibleSdkVersion": "9",
+    "targetSdkVersion": "9"
   }
 }
