@@ -1,0 +1,12 @@
+{
+  "string": [
+    {
+      "name": "app_name",
+      "value": "家庭情绪系统"
+    },
+    {
+      "name": "app_description",
+      "value": "家庭成员情绪打卡与管理应用"
+    }
+  ]
+}

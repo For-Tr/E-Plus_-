@@ -1,0 +1,21 @@
+# HarmonyOS Build outputs
+build/
+node_modules/
+oh_modules/
+.hvigor/
+.idea/
+
+# Local configuration
+local.properties
+
+# Generated files
+*.hap
+*.app
+
+# IDE
+.vscode/
+*.iml
+
+# OS
+.DS_Store
+Thumbs.db

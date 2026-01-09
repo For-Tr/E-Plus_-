@@ -1,0 +1,28 @@
+{
+  "string": [
+    {
+      "name": "module_desc",
+      "value": "家庭情绪打卡系统模块"
+    },
+    {
+      "name": "EntryAbility_desc",
+      "value": "家庭成员情绪打卡应用"
+    },
+    {
+      "name": "EntryAbility_label",
+      "value": "家庭情绪系统"
+    },
+    {
+      "name": "permission_internet_reason",
+      "value": "需要访问网络以同步打卡数据和情绪记录"
+    },
+    {
+      "name": "permission_camera_reason",
+      "value": "需要使用相机进行人脸打卡和情绪识别"
+    },
+    {
+      "name": "permission_media_reason",
+      "value": "需要读写媒体文件以保存和上传照片"
+    }
+  ]
+}
