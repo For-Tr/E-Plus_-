@@ -75,7 +75,7 @@ struct FaceRegister {
     this.message = '正在注册人脸...'
 
     try {
-      const response = await HttpUtil.uploadImage(
+      const response: { success: boolean; error?: string } = await HttpUtil.uploadImage(
         ApiEndpoints.FACE_REGISTER,
         this.capturedImage,
         'photo'

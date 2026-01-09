@@ -62,14 +62,14 @@ export class EmotionNames {
     static readonly neutral: string = '😐 平静';
     static get(emotion: string): string {
         switch (emotion) {
-            case 'happy': return this.happy;
-            case 'sad': return this.sad;
-            case 'angry': return this.angry;
-            case 'fear': return this.fear;
-            case 'surprise': return this.surprise;
-            case 'disgust': return this.disgust;
-            case 'neutral': return this.neutral;
-            default: return this.neutral;
+            case 'happy': return EmotionNames.happy;
+            case 'sad': return EmotionNames.sad;
+            case 'angry': return EmotionNames.angry;
+            case 'fear': return EmotionNames.fear;
+            case 'surprise': return EmotionNames.surprise;
+            case 'disgust': return EmotionNames.disgust;
+            case 'neutral': return EmotionNames.neutral;
+            default: return EmotionNames.neutral;
         }
     }
 }

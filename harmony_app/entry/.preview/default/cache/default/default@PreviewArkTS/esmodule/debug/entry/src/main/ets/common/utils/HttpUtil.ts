@@ -41,7 +41,7 @@ class HttpUtil {
     async request<T>(url: string, options: RequestOptions): Promise<ApiResponse<T>> {
         const method = options.method ?? http.RequestMethod.GET;
         const headers = options.headers ?? {};
-        const body = options.body ?? null;
+        const body: any | null = options.body ?? null;
         const needAuth = options.needAuth ?? true;
         try {
             // 创建HTTP请求

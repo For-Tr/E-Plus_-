@@ -191,6 +191,10 @@ class Checkin extends ViewPU {
         this.isLoading = true;
         this.message = '正在识别人脸和情绪...';
         try {
+            if (!this.currentTask) {
+                this.message = '任务信息丢失,请返回重试';
+                return;
+            }
             const requestData: CheckinCreateRequest = {
                 task_id: this.currentTask.id,
                 photo: this.capturedImage
@@ -236,14 +240,14 @@ class Checkin extends ViewPU {
     initialRender() {
         this.observeComponentCreation2((elmtId, isInitialRender) => {
             Column.create();
-            Column.debugLine("entry/src/main/ets/pages/Checkin.ets(150:5)", "entry");
+            Column.debugLine("entry/src/main/ets/pages/Checkin.ets(155:5)", "entry");
             Column.width('100%');
             Column.height('100%');
         }, Column);
         this.observeComponentCreation2((elmtId, isInitialRender) => {
             // 顶部标题栏
             Row.create();
-            Row.debugLine("entry/src/main/ets/pages/Checkin.ets(152:7)", "entry");
+            Row.debugLine("entry/src/main/ets/pages/Checkin.ets(157:7)", "entry");
             // 顶部标题栏
             Row.width('100%');
             // 顶部标题栏
@@ -255,7 +259,7 @@ class Checkin extends ViewPU {
         }, Row);
         this.observeComponentCreation2((elmtId, isInitialRender) => {
             Image.create({ "id": 16777229, "type": 20000, params: [], "bundleName": "com.family.emotion", "moduleName": "entry" });
-            Image.debugLine("entry/src/main/ets/pages/Checkin.ets(153:9)", "entry");
+            Image.debugLine("entry/src/main/ets/pages/Checkin.ets(158:9)", "entry");
             Image.width(24);
             Image.height(24);
             Image.onClick(() => {
@@ -264,7 +268,7 @@ class Checkin extends ViewPU {
         }, Image);
         this.observeComponentCreation2((elmtId, isInitialRender) => {
             Text.create('打卡');
-            Text.debugLine("entry/src/main/ets/pages/Checkin.ets(160:9)", "entry");
+            Text.debugLine("entry/src/main/ets/pages/Checkin.ets(165:9)", "entry");
             Text.fontSize(20);
             Text.fontWeight(FontWeight.Medium);
             Text.fontColor('#333');
@@ -275,7 +279,7 @@ class Checkin extends ViewPU {
         this.observeComponentCreation2((elmtId, isInitialRender) => {
             // 占位,保持标题居中
             Column.create();
-            Column.debugLine("entry/src/main/ets/pages/Checkin.ets(168:9)", "entry");
+            Column.debugLine("entry/src/main/ets/pages/Checkin.ets(173:9)", "entry");
             // 占位,保持标题居中
             Column.width(24);
             // 占位,保持标题居中
@@ -288,7 +292,7 @@ class Checkin extends ViewPU {
         this.observeComponentCreation2((elmtId, isInitialRender) => {
             // 主内容
             Column.create();
-            Column.debugLine("entry/src/main/ets/pages/Checkin.ets(178:7)", "entry");
+            Column.debugLine("entry/src/main/ets/pages/Checkin.ets(183:7)", "entry");
             // 主内容
             Column.layoutWeight(1);
             // 主内容
@@ -301,20 +305,20 @@ class Checkin extends ViewPU {
                     this.observeComponentCreation2((elmtId, isInitialRender) => {
                         // 任务说明页面
                         Column.create();
-                        Column.debugLine("entry/src/main/ets/pages/Checkin.ets(181:11)", "entry");
+                        Column.debugLine("entry/src/main/ets/pages/Checkin.ets(186:11)", "entry");
                         // 任务说明页面
                         Column.width('100%');
                     }, Column);
                     this.observeComponentCreation2((elmtId, isInitialRender) => {
                         Image.create({ "id": 16777232, "type": 20000, params: [], "bundleName": "com.family.emotion", "moduleName": "entry" });
-                        Image.debugLine("entry/src/main/ets/pages/Checkin.ets(182:13)", "entry");
+                        Image.debugLine("entry/src/main/ets/pages/Checkin.ets(187:13)", "entry");
                         Image.width(100);
                         Image.height(100);
                         Image.margin({ top: 50, bottom: 30 });
                     }, Image);
                     this.observeComponentCreation2((elmtId, isInitialRender) => {
                         Text.create(this.currentTask.task_name);
-                        Text.debugLine("entry/src/main/ets/pages/Checkin.ets(187:13)", "entry");
+                        Text.debugLine("entry/src/main/ets/pages/Checkin.ets(192:13)", "entry");
                         Text.fontSize(24);
                         Text.fontWeight(FontWeight.Bold);
                         Text.fontColor('#333');
@@ -323,13 +327,13 @@ class Checkin extends ViewPU {
                     Text.pop();
                     this.observeComponentCreation2((elmtId, isInitialRender) => {
                         Column.create();
-                        Column.debugLine("entry/src/main/ets/pages/Checkin.ets(193:13)", "entry");
+                        Column.debugLine("entry/src/main/ets/pages/Checkin.ets(198:13)", "entry");
                         Column.width('85%');
                         Column.margin({ bottom: 50 });
                     }, Column);
                     this.observeComponentCreation2((elmtId, isInitialRender) => {
                         Text.create('准备开始打卡');
-                        Text.debugLine("entry/src/main/ets/pages/Checkin.ets(194:15)", "entry");
+                        Text.debugLine("entry/src/main/ets/pages/Checkin.ets(199:15)", "entry");
                         Text.fontSize(18);
                         Text.fontColor('#666');
                         Text.margin({ bottom: 20 });
@@ -337,7 +341,7 @@ class Checkin extends ViewPU {
                     Text.pop();
                     this.observeComponentCreation2((elmtId, isInitialRender) => {
                         Column.create();
-                        Column.debugLine("entry/src/main/ets/pages/Checkin.ets(199:15)", "entry");
+                        Column.debugLine("entry/src/main/ets/pages/Checkin.ets(204:15)", "entry");
                         Column.alignItems(HorizontalAlign.Start);
                         Column.padding(20);
                         Column.backgroundColor('#FFF9E6');
@@ -345,14 +349,6 @@ class Checkin extends ViewPU {
                     }, Column);
                     this.observeComponentCreation2((elmtId, isInitialRender) => {
                         Text.create('• 请正对摄像头');
-                        Text.debugLine("entry/src/main/ets/pages/Checkin.ets(200:17)", "entry");
-                        Text.fontSize(16);
-                        Text.fontColor('#666');
-                        Text.margin({ bottom: 8 });
-                    }, Text);
-                    Text.pop();
-                    this.observeComponentCreation2((elmtId, isInitialRender) => {
-                        Text.create('• 保持面部清晰可见');
                         Text.debugLine("entry/src/main/ets/pages/Checkin.ets(205:17)", "entry");
                         Text.fontSize(16);
                         Text.fontColor('#666');
@@ -360,8 +356,16 @@ class Checkin extends ViewPU {
                     }, Text);
                     Text.pop();
                     this.observeComponentCreation2((elmtId, isInitialRender) => {
-                        Text.create('• 系统将自动识别您的情绪');
+                        Text.create('• 保持面部清晰可见');
                         Text.debugLine("entry/src/main/ets/pages/Checkin.ets(210:17)", "entry");
+                        Text.fontSize(16);
+                        Text.fontColor('#666');
+                        Text.margin({ bottom: 8 });
+                    }, Text);
+                    Text.pop();
+                    this.observeComponentCreation2((elmtId, isInitialRender) => {
+                        Text.create('• 系统将自动识别您的情绪');
+                        Text.debugLine("entry/src/main/ets/pages/Checkin.ets(215:17)", "entry");
                         Text.fontSize(16);
                         Text.fontColor('#666');
                         Text.margin({ bottom: 8 });
@@ -371,7 +375,7 @@ class Checkin extends ViewPU {
                     Column.pop();
                     this.observeComponentCreation2((elmtId, isInitialRender) => {
                         Button.createWithLabel('开始打卡');
-                        Button.debugLine("entry/src/main/ets/pages/Checkin.ets(223:13)", "entry");
+                        Button.debugLine("entry/src/main/ets/pages/Checkin.ets(228:13)", "entry");
                         Button.width('70%');
                         Button.height(55);
                         Button.fontSize(20);
@@ -393,11 +397,11 @@ class Checkin extends ViewPU {
                     this.observeComponentCreation2((elmtId, isInitialRender) => {
                         // 拍照中
                         Column.create();
-                        Column.debugLine("entry/src/main/ets/pages/Checkin.ets(239:11)", "entry");
+                        Column.debugLine("entry/src/main/ets/pages/Checkin.ets(244:11)", "entry");
                     }, Column);
                     this.observeComponentCreation2((elmtId, isInitialRender) => {
                         Text.create('请保持面部在框内');
-                        Text.debugLine("entry/src/main/ets/pages/Checkin.ets(240:13)", "entry");
+                        Text.debugLine("entry/src/main/ets/pages/Checkin.ets(245:13)", "entry");
                         Text.fontSize(18);
                         Text.fontColor('#333');
                         Text.margin({ top: 50, bottom: 30 });
@@ -406,7 +410,7 @@ class Checkin extends ViewPU {
                     this.observeComponentCreation2((elmtId, isInitialRender) => {
                         // 相机预览占位
                         Column.create();
-                        Column.debugLine("entry/src/main/ets/pages/Checkin.ets(246:13)", "entry");
+                        Column.debugLine("entry/src/main/ets/pages/Checkin.ets(251:13)", "entry");
                         // 相机预览占位
                         Column.width(300);
                         // 相机预览占位
@@ -420,7 +424,7 @@ class Checkin extends ViewPU {
                     }, Column);
                     this.observeComponentCreation2((elmtId, isInitialRender) => {
                         Text.create('📷');
-                        Text.debugLine("entry/src/main/ets/pages/Checkin.ets(247:15)", "entry");
+                        Text.debugLine("entry/src/main/ets/pages/Checkin.ets(252:15)", "entry");
                         Text.fontSize(80);
                     }, Text);
                     Text.pop();
@@ -428,7 +432,7 @@ class Checkin extends ViewPU {
                     Column.pop();
                     this.observeComponentCreation2((elmtId, isInitialRender) => {
                         Text.create(this.message);
-                        Text.debugLine("entry/src/main/ets/pages/Checkin.ets(256:13)", "entry");
+                        Text.debugLine("entry/src/main/ets/pages/Checkin.ets(261:13)", "entry");
                         Text.fontSize(16);
                         Text.fontColor('#666');
                         Text.margin({ top: 20 });
@@ -443,14 +447,14 @@ class Checkin extends ViewPU {
                     this.observeComponentCreation2((elmtId, isInitialRender) => {
                         // 结果展示
                         Column.create();
-                        Column.debugLine("entry/src/main/ets/pages/Checkin.ets(264:11)", "entry");
+                        Column.debugLine("entry/src/main/ets/pages/Checkin.ets(269:11)", "entry");
                         // 结果展示
                         Column.width('100%');
                     }, Column);
                     this.observeComponentCreation2((elmtId, isInitialRender) => {
                         // 成功图标
                         Text.create('✓');
-                        Text.debugLine("entry/src/main/ets/pages/Checkin.ets(266:13)", "entry");
+                        Text.debugLine("entry/src/main/ets/pages/Checkin.ets(271:13)", "entry");
                         // 成功图标
                         Text.fontSize(80);
                         // 成功图标
@@ -462,7 +466,7 @@ class Checkin extends ViewPU {
                     Text.pop();
                     this.observeComponentCreation2((elmtId, isInitialRender) => {
                         Text.create('打卡成功!');
-                        Text.debugLine("entry/src/main/ets/pages/Checkin.ets(271:13)", "entry");
+                        Text.debugLine("entry/src/main/ets/pages/Checkin.ets(276:13)", "entry");
                         Text.fontSize(28);
                         Text.fontWeight(FontWeight.Bold);
                         Text.fontColor('#333');
@@ -472,7 +476,7 @@ class Checkin extends ViewPU {
                     this.observeComponentCreation2((elmtId, isInitialRender) => {
                         // 结果卡片
                         Column.create();
-                        Column.debugLine("entry/src/main/ets/pages/Checkin.ets(278:13)", "entry");
+                        Column.debugLine("entry/src/main/ets/pages/Checkin.ets(283:13)", "entry");
                         // 结果卡片
                         Column.width('85%');
                         // 结果卡片
@@ -494,7 +498,7 @@ class Checkin extends ViewPU {
                     this.observeComponentCreation2((elmtId, isInitialRender) => {
                         // 打卡时间
                         Row.create();
-                        Row.debugLine("entry/src/main/ets/pages/Checkin.ets(280:15)", "entry");
+                        Row.debugLine("entry/src/main/ets/pages/Checkin.ets(285:15)", "entry");
                         // 打卡时间
                         Row.width('100%');
                         // 打卡时间
@@ -502,19 +506,19 @@ class Checkin extends ViewPU {
                     }, Row);
                     this.observeComponentCreation2((elmtId, isInitialRender) => {
                         Text.create('打卡时间:');
-                        Text.debugLine("entry/src/main/ets/pages/Checkin.ets(281:17)", "entry");
+                        Text.debugLine("entry/src/main/ets/pages/Checkin.ets(286:17)", "entry");
                         Text.fontSize(16);
                         Text.fontColor('#666');
                     }, Text);
                     Text.pop();
                     this.observeComponentCreation2((elmtId, isInitialRender) => {
                         Blank.create();
-                        Blank.debugLine("entry/src/main/ets/pages/Checkin.ets(284:17)", "entry");
+                        Blank.debugLine("entry/src/main/ets/pages/Checkin.ets(289:17)", "entry");
                     }, Blank);
                     Blank.pop();
                     this.observeComponentCreation2((elmtId, isInitialRender) => {
                         Text.create(new Date(this.checkinResult.checkin_time).toLocaleString('zh-CN'));
-                        Text.debugLine("entry/src/main/ets/pages/Checkin.ets(285:17)", "entry");
+                        Text.debugLine("entry/src/main/ets/pages/Checkin.ets(290:17)", "entry");
                         Text.fontSize(16);
                         Text.fontColor('#333');
                     }, Text);
@@ -524,7 +528,7 @@ class Checkin extends ViewPU {
                     this.observeComponentCreation2((elmtId, isInitialRender) => {
                         // 打卡状态
                         Row.create();
-                        Row.debugLine("entry/src/main/ets/pages/Checkin.ets(293:15)", "entry");
+                        Row.debugLine("entry/src/main/ets/pages/Checkin.ets(298:15)", "entry");
                         // 打卡状态
                         Row.width('100%');
                         // 打卡状态
@@ -532,20 +536,20 @@ class Checkin extends ViewPU {
                     }, Row);
                     this.observeComponentCreation2((elmtId, isInitialRender) => {
                         Text.create('打卡状态:');
-                        Text.debugLine("entry/src/main/ets/pages/Checkin.ets(294:17)", "entry");
+                        Text.debugLine("entry/src/main/ets/pages/Checkin.ets(299:17)", "entry");
                         Text.fontSize(16);
                         Text.fontColor('#666');
                     }, Text);
                     Text.pop();
                     this.observeComponentCreation2((elmtId, isInitialRender) => {
                         Blank.create();
-                        Blank.debugLine("entry/src/main/ets/pages/Checkin.ets(297:17)", "entry");
+                        Blank.debugLine("entry/src/main/ets/pages/Checkin.ets(302:17)", "entry");
                     }, Blank);
                     Blank.pop();
                     this.observeComponentCreation2((elmtId, isInitialRender) => {
                         Text.create(this.checkinResult.status === 'on_time' ? '准时' :
                             this.checkinResult.status === 'late' ? '迟到' : '补签');
-                        Text.debugLine("entry/src/main/ets/pages/Checkin.ets(298:17)", "entry");
+                        Text.debugLine("entry/src/main/ets/pages/Checkin.ets(303:17)", "entry");
                         Text.fontSize(16);
                         Text.fontColor(this.checkinResult.status === 'on_time' ? '#52C41A' :
                             this.checkinResult.status === 'late' ? '#FAAD14' : '#F5222D');
@@ -561,25 +565,25 @@ class Checkin extends ViewPU {
                             this.ifElseBranchUpdateFunction(0, () => {
                                 this.observeComponentCreation2((elmtId, isInitialRender) => {
                                     Row.create();
-                                    Row.debugLine("entry/src/main/ets/pages/Checkin.ets(314:17)", "entry");
+                                    Row.debugLine("entry/src/main/ets/pages/Checkin.ets(319:17)", "entry");
                                     Row.width('100%');
                                     Row.margin({ bottom: 15 });
                                 }, Row);
                                 this.observeComponentCreation2((elmtId, isInitialRender) => {
                                     Text.create('当前情绪:');
-                                    Text.debugLine("entry/src/main/ets/pages/Checkin.ets(315:19)", "entry");
+                                    Text.debugLine("entry/src/main/ets/pages/Checkin.ets(320:19)", "entry");
                                     Text.fontSize(16);
                                     Text.fontColor('#666');
                                 }, Text);
                                 Text.pop();
                                 this.observeComponentCreation2((elmtId, isInitialRender) => {
                                     Blank.create();
-                                    Blank.debugLine("entry/src/main/ets/pages/Checkin.ets(318:19)", "entry");
+                                    Blank.debugLine("entry/src/main/ets/pages/Checkin.ets(323:19)", "entry");
                                 }, Blank);
                                 Blank.pop();
                                 this.observeComponentCreation2((elmtId, isInitialRender) => {
                                     Text.create(EmotionNames.get(this.checkinResult.emotion));
-                                    Text.debugLine("entry/src/main/ets/pages/Checkin.ets(319:19)", "entry");
+                                    Text.debugLine("entry/src/main/ets/pages/Checkin.ets(324:19)", "entry");
                                     Text.fontSize(20);
                                     Text.fontWeight(FontWeight.Medium);
                                 }, Text);
@@ -601,24 +605,24 @@ class Checkin extends ViewPU {
                             this.ifElseBranchUpdateFunction(0, () => {
                                 this.observeComponentCreation2((elmtId, isInitialRender) => {
                                     Row.create();
-                                    Row.debugLine("entry/src/main/ets/pages/Checkin.ets(329:17)", "entry");
+                                    Row.debugLine("entry/src/main/ets/pages/Checkin.ets(334:17)", "entry");
                                     Row.width('100%');
                                 }, Row);
                                 this.observeComponentCreation2((elmtId, isInitialRender) => {
                                     Text.create('置信度:');
-                                    Text.debugLine("entry/src/main/ets/pages/Checkin.ets(330:19)", "entry");
+                                    Text.debugLine("entry/src/main/ets/pages/Checkin.ets(335:19)", "entry");
                                     Text.fontSize(16);
                                     Text.fontColor('#666');
                                 }, Text);
                                 Text.pop();
                                 this.observeComponentCreation2((elmtId, isInitialRender) => {
                                     Blank.create();
-                                    Blank.debugLine("entry/src/main/ets/pages/Checkin.ets(333:19)", "entry");
+                                    Blank.debugLine("entry/src/main/ets/pages/Checkin.ets(338:19)", "entry");
                                 }, Blank);
                                 Blank.pop();
                                 this.observeComponentCreation2((elmtId, isInitialRender) => {
                                     Text.create(`${this.checkinResult.emotion_confidence.toFixed(1)}%`);
-                                    Text.debugLine("entry/src/main/ets/pages/Checkin.ets(334:19)", "entry");
+                                    Text.debugLine("entry/src/main/ets/pages/Checkin.ets(339:19)", "entry");
                                     Text.fontSize(16);
                                     Text.fontColor('#333');
                                 }, Text);
@@ -636,7 +640,7 @@ class Checkin extends ViewPU {
                     Column.pop();
                     this.observeComponentCreation2((elmtId, isInitialRender) => {
                         Button.createWithLabel('完成');
-                        Button.debugLine("entry/src/main/ets/pages/Checkin.ets(353:13)", "entry");
+                        Button.debugLine("entry/src/main/ets/pages/Checkin.ets(358:13)", "entry");
                         Button.width('70%');
                         Button.height(50);
                         Button.fontSize(18);
