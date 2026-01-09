@@ -1,0 +1,156 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}情绪记录 - 家庭情绪管理系统{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>情绪记录</h2>
+            <div>
+                <a href="{% url 'emotions:statistics' %}" class="btn btn-outline-info">统计分析</a>
+                <a href="{% url 'emotions:trends' %}" class="btn btn-outline-primary">情绪趋势</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 筛选条件 -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <form method="get" class="row g-3">
+                    <div class="col-md-3">
+                        <label for="days" class="form-label">时间范围</label>
+                        <select class="form-select" id="days" name="days">
+                            <option value="7" {% if days_filter == '7' %}selected{% endif %}>最近7天</option>
+                            <option value="14" {% if days_filter == '14' %}selected{% endif %}>最近14天</option>
+                            <option value="30" {% if days_filter == '30' %}selected{% endif %}>最近30天</option>
+                            <option value="90" {% if days_filter == '90' %}selected{% endif %}>最近90天</option>
+                        </select>
+                    </div>
+                    
+                    <div class="col-md-3">
+                        <label for="emotion" class="form-label">情绪类型</label>
+                        <select class="form-select" id="emotion" name="emotion">
+                            <option value="">全部</option>
+                            <option value="happy" {% if emotion_filter == 'happy' %}selected{% endif %}>😊 开心</option>
+                            <option value="sad" {% if emotion_filter == 'sad' %}selected{% endif %}>😢 难过</option>
+                            <option value="angry" {% if emotion_filter == 'angry' %}selected{% endif %}>😠 生气</option>
+                            <option value="fear" {% if emotion_filter == 'fear' %}selected{% endif %}>😨 恐惧</option>
+                            <option value="surprise" {% if emotion_filter == 'surprise' %}selected{% endif %}>😲 惊讶</option>
+                            <option value="disgust" {% if emotion_filter == 'disgust' %}selected{% endif %}>🤢 厌恶</option>
+                            <option value="neutral" {% if emotion_filter == 'neutral' %}selected{% endif %}>😐 平静</option>
+                        </select>
+                    </div>
+                    
+                    {% if can_view_all %}
+                        <div class="col-md-3">
+                            <label for="member" class="form-label">家庭成员</label>
+                            <select class="form-select" id="member" name="member">
+                                <option value="">全部成员</option>
+                                {% for member in members %}
+                                    <option value="{{ member.id }}" {% if member_filter == member.id|stringformat:"s" %}selected{% endif %}>
+                                        {{ member.display_name|default:member.username }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    {% endif %}
+                    
+                    <div class="col-md-3 d-flex align-items-end">
+                        <button type="submit" class="btn btn-primary w-100">筛选</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 记录列表 -->
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                {% if records %}
+                    <div class="row">
+                        {% for record in records %}
+                            <div class="col-md-6 col-lg-4 mb-3">
+                                <a href="{% url 'emotions:record_detail' record.id %}" class="text-decoration-none">
+                                    <div class="card h-100 hover-shadow">
+                                        <div class="card-body">
+                                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                                <div>
+                                                    <h6 class="card-title mb-1">
+                                                        {{ record.user.display_name|default:record.user.username }}
+                                                    </h6>
+                                                    <small class="text-muted">{{ record.recorded_at|date:"m月d日 H:i" }}</small>
+                                                </div>
+                                                <span style="font-size: 2rem;">
+                                                    {% if record.emotion == 'happy' %}😊
+                                                    {% elif record.emotion == 'sad' %}😢
+                                                    {% elif record.emotion == 'angry' %}😠
+                                                    {% elif record.emotion == 'fear' %}😨
+                                                    {% elif record.emotion == 'surprise' %}😲
+                                                    {% elif record.emotion == 'disgust' %}🤢
+                                                    {% else %}😐
+                                                    {% endif %}
+                                                </span>
+                                            </div>
+                                            <p class="mb-2">
+                                                <strong>
+                                                    {% if record.emotion == 'happy' %}开心
+                                                    {% elif record.emotion == 'sad' %}难过
+                                                    {% elif record.emotion == 'angry' %}生气
+                                                    {% elif record.emotion == 'fear' %}恐惧
+                                                    {% elif record.emotion == 'surprise' %}惊讶
+                                                    {% elif record.emotion == 'disgust' %}厌恶
+                                                    {% else %}平静
+                                                    {% endif %}
+                                                </strong>
+                                            </p>
+                                            {% if record.confidence %}
+                                                <div class="progress" style="height: 5px;">
+                                                    <div class="progress-bar" role="progressbar" 
+                                                         style="width: {{ record.confidence }}%"></div>
+                                                </div>
+                                                <small class="text-muted">置信度: {{ record.confidence|floatformat:1 }}%</small>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    
+                    {% if records|length >= 100 %}
+                        <div class="alert alert-info mt-3 mb-0">
+                            <i class="bi bi-info-circle"></i> 仅显示最近100条记录,请使用筛选功能缩小范围
+                        </div>
+                    {% endif %}
+                {% else %}
+                    <div class="text-center py-5">
+                        <p class="text-muted mb-3">没有找到符合条件的情绪记录</p>
+                        <a href="{% url 'emotions:record_list' %}" class="btn btn-outline-primary">
+                            查看全部
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.hover-shadow {
+    transition: box-shadow 0.3s ease;
+}
+.hover-shadow:hover {
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+</style>
+{% endblock %}

@@ -1,0 +1,55 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}生成邀请码 - 家庭情绪管理系统{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-6 mx-auto">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="mb-0">生成新邀请码</h4>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    <div class="mb-3">
+                        <label for="display_name" class="form-label">家庭成员姓名 <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="display_name" name="display_name" required
+                               placeholder="例如:爸爸、妈妈、小明">
+                        <div class="form-text">填写家庭成员的姓名,系统将自动创建账号</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="expires_days" class="form-label">有效期 <span class="text-danger">*</span></label>
+                        <select class="form-select" id="expires_days" name="expires_days" required>
+                            <option value="1">1天</option>
+                            <option value="3">3天</option>
+                            <option value="7" selected>7天</option>
+                            <option value="14">14天</option>
+                            <option value="30">30天</option>
+                        </select>
+                    </div>
+                    
+                    <div class="alert alert-info">
+                        <strong>说明:</strong>
+                        <ul class="mb-0 mt-2">
+                            <li>填写成员姓名后,系统将自动创建账号和生成邀请码</li>
+                            <li>家庭成员使用邀请码即可直接登录鸿蒙App,无需知道账号密码</li>
+                            <li>每个邀请码对应一个家庭成员</li>
+                            <li>邀请码区分大小写</li>
+                            <li>过期后的邀请码将无法使用</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="d-flex justify-content-between">
+                        <a href="{% url 'families:invite_list' %}" class="btn btn-outline-secondary">取消</a>
+                        <button type="submit" class="btn btn-primary">生成邀请码</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

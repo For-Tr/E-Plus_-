@@ -1,0 +1,114 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}成员列表 - 家庭情绪管理系统{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>家庭成员列表</h2>
+            {% if user.is_family_admin %}
+                <a href="{% url 'families:generate_invite' %}" class="btn btn-primary">
+                    <i class="bi bi-plus-circle"></i> 邀请新成员
+                </a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    {% if members %}
+        {% for member in members %}
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <div class="d-flex align-items-start mb-3">
+                            <div class="flex-shrink-0">
+                                {% if member.avatar %}
+                                    <img src="{{ member.avatar.url }}" class="rounded-circle" width="60" height="60" alt="{{ member.display_name }}">
+                                {% else %}
+                                    <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center" 
+                                         style="width: 60px; height: 60px; font-size: 24px;">
+                                        {{ member.display_name|default:member.username|first }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h5 class="card-title mb-1">
+                                    {{ member.display_name|default:member.username }}
+                                </h5>
+                                <p class="text-muted mb-0">
+                                    {% if member.is_family_admin %}
+                                        <span class="badge bg-warning">家庭管理员</span>
+                                    {% else %}
+                                        <span class="badge bg-info">家庭成员</span>
+                                    {% endif %}
+                                </p>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <small class="text-muted d-block">用户名: {{ member.username }}</small>
+                            <small class="text-muted d-block">邮箱: {{ member.email|default:"-" }}</small>
+                            <small class="text-muted d-block">加入时间: {{ member.date_joined|date:"Y-m-d" }}</small>
+                        </div>
+                        
+                        <div class="row g-2 mb-3">
+                            <div class="col-6">
+                                <div class="text-center p-2 bg-light rounded">
+                                    <div class="fw-bold">{{ member.total_checkins }}</div>
+                                    <small class="text-muted">打卡次数</small>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="text-center p-2 bg-light rounded">
+                                    <div class="fw-bold">
+                                        {% if member.recent_emotion %}
+                                            {% if member.recent_emotion.emotion == 'happy' %}😊
+                                            {% elif member.recent_emotion.emotion == 'sad' %}😢
+                                            {% elif member.recent_emotion.emotion == 'angry' %}😠
+                                            {% elif member.recent_emotion.emotion == 'fear' %}😨
+                                            {% elif member.recent_emotion.emotion == 'surprise' %}😲
+                                            {% elif member.recent_emotion.emotion == 'disgust' %}🤢
+                                            {% else %}😐
+                                            {% endif %}
+                                        {% else %}
+                                            -
+                                        {% endif %}
+                                    </div>
+                                    <small class="text-muted">最近情绪</small>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="d-flex gap-2">
+                            <a href="{% url 'families:member_detail' member.id %}" class="btn btn-outline-primary btn-sm flex-fill">
+                                查看详情
+                            </a>
+                            {% if user.is_family_admin and member.id != user.id %}
+                                <a href="{% url 'emotions:trends' %}?member={{ member.id }}" class="btn btn-outline-info btn-sm flex-fill">
+                                    情绪趋势
+                                </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body text-center py-5">
+                    <p class="text-muted mb-3">家庭中还没有成员</p>
+                    {% if user.is_family_admin %}
+                        <a href="{% url 'families:generate_invite' %}" class="btn btn-primary">
+                            立即邀请成员
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

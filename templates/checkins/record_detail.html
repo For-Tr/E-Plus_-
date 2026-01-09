@@ -1,0 +1,166 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}打卡详情 - 家庭情绪管理系统{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'checkins:record_list' %}">打卡记录</a></li>
+                <li class="breadcrumb-item active">打卡详情</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-8 mx-auto">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="mb-0">打卡详情</h4>
+            </div>
+            <div class="card-body">
+                <!-- 基本信息 -->
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <h6 class="text-muted mb-2">打卡人</h6>
+                        <p class="mb-0">
+                            <a href="{% url 'families:member_detail' record.user.id %}">
+                                {{ record.user.display_name|default:record.user.username }}
+                            </a>
+                        </p>
+                    </div>
+                    <div class="col-md-6">
+                        <h6 class="text-muted mb-2">任务名称</h6>
+                        <p class="mb-0">
+                            <a href="{% url 'checkins:task_detail' record.task.id %}">
+                                {{ record.task.task_name }}
+                            </a>
+                        </p>
+                    </div>
+                </div>
+
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <h6 class="text-muted mb-2">打卡时间</h6>
+                        <p class="mb-0">{{ record.checkin_time|date:"Y-m-d H:i:s" }}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <h6 class="text-muted mb-2">打卡状态</h6>
+                        <p class="mb-0">
+                            {% if record.status == 'on_time' %}
+                                <span class="badge bg-success">准时</span>
+                            {% elif record.status == 'late' %}
+                                <span class="badge bg-warning">迟到</span>
+                            {% else %}
+                                <span class="badge bg-danger">补签</span>
+                            {% endif %}
+                        </p>
+                    </div>
+                </div>
+
+                <!-- 人脸信息 -->
+                {% if record.face_photo %}
+                    <div class="mb-4">
+                        <h6 class="text-muted mb-2">人脸照片</h6>
+                        <img src="{{ record.face_photo.url }}" class="img-fluid rounded" 
+                             style="max-width: 300px;" alt="人脸照片">
+                        {% if record.face_verified %}
+                            <p class="text-success mt-2">
+                                <i class="bi bi-check-circle"></i> 人脸验证通过
+                            </p>
+                        {% else %}
+                            <p class="text-danger mt-2">
+                                <i class="bi bi-x-circle"></i> 人脸验证失败
+                            </p>
+                        {% endif %}
+                    </div>
+                {% endif %}
+
+                <!-- 情绪信息 -->
+                {% if record.emotion %}
+                    <div class="mb-4">
+                        <h6 class="text-muted mb-2">检测情绪</h6>
+                        <div class="d-flex align-items-center">
+                            <span style="font-size: 3rem; margin-right: 1rem;">
+                                {% if record.emotion == 'happy' %}😊
+                                {% elif record.emotion == 'sad' %}😢
+                                {% elif record.emotion == 'angry' %}😠
+                                {% elif record.emotion == 'fear' %}😨
+                                {% elif record.emotion == 'surprise' %}😲
+                                {% elif record.emotion == 'disgust' %}🤢
+                                {% else %}😐
+                                {% endif %}
+                            </span>
+                            <div>
+                                <h4 class="mb-1">
+                                    {% if record.emotion == 'happy' %}开心
+                                    {% elif record.emotion == 'sad' %}难过
+                                    {% elif record.emotion == 'angry' %}生气
+                                    {% elif record.emotion == 'fear' %}恐惧
+                                    {% elif record.emotion == 'surprise' %}惊讶
+                                    {% elif record.emotion == 'disgust' %}厌恶
+                                    {% else %}平静
+                                    {% endif %}
+                                </h4>
+                                {% if record.emotion_confidence %}
+                                    <p class="text-muted mb-0">置信度: {{ record.emotion_confidence|floatformat:2 }}%</p>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        {% if record.emotion_detail %}
+                            <div class="mt-3">
+                                <h6 class="text-muted mb-2">情绪详细分析</h6>
+                                <div class="progress-stacked" style="height: 30px;">
+                                    {% for emotion, score in record.emotion_detail.items %}
+                                        <div class="progress" role="progressbar" 
+                                             style="width: {{ score }}%" 
+                                             title="{{ emotion }}: {{ score|floatformat:1 }}%">
+                                            <div class="progress-bar">{{ score|floatformat:0 }}%</div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        {% endif %}
+                    </div>
+                {% endif %}
+
+                <!-- 位置信息 -->
+                {% if record.location %}
+                    <div class="mb-4">
+                        <h6 class="text-muted mb-2">打卡位置</h6>
+                        <p class="mb-0">{{ record.location }}</p>
+                    </div>
+                {% endif %}
+
+                <!-- 备注 -->
+                {% if record.note %}
+                    <div class="mb-4">
+                        <h6 class="text-muted mb-2">备注</h6>
+                        <p class="mb-0">{{ record.note }}</p>
+                    </div>
+                {% endif %}
+
+                <hr>
+
+                <div class="d-flex justify-content-between">
+                    <a href="{% url 'checkins:record_list' %}" class="btn btn-outline-secondary">
+                        返回列表
+                    </a>
+                    <div>
+                        <a href="{% url 'checkins:task_detail' record.task.id %}" class="btn btn-outline-primary">
+                            查看任务
+                        </a>
+                        <a href="{% url 'families:member_detail' record.user.id %}" class="btn btn-outline-info">
+                            查看成员
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

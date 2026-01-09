@@ -1,0 +1,168 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}家庭仪表板 - 家庭情绪管理系统{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>{{ family.family_name }} - 家庭仪表板</h2>
+            {% if user.is_family_admin %}
+                <div>
+                    <a href="{% url 'families:invite_list' %}" class="btn btn-outline-primary">邀请码管理</a>
+                    <a href="{% url 'checkins:create_task' %}" class="btn btn-primary">创建打卡任务</a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- 统计卡片 -->
+<div class="row mb-4">
+    <div class="col-md-3 mb-3">
+        <div class="card bg-primary text-white">
+            <div class="card-body">
+                <h6 class="card-title">家庭成员</h6>
+                <h2 class="mb-0">{{ member_count }}</h2>
+                <small>活跃成员数</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card bg-success text-white">
+            <div class="card-body">
+                <h6 class="card-title">打卡次数</h6>
+                <h2 class="mb-0">{{ total_checkins }}</h2>
+                <small>最近7天</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card bg-info text-white">
+            <div class="card-body">
+                <h6 class="card-title">准时率</h6>
+                <h2 class="mb-0">{{ checkin_rate }}%</h2>
+                <small>{{ on_time_checkins }}/{{ total_checkins }}</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card bg-warning text-white">
+            <div class="card-body">
+                <h6 class="card-title">活跃任务</h6>
+                <h2 class="mb-0">{{ active_tasks }}</h2>
+                <small>正在进行的任务</small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <!-- 表情统计 -->
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">情绪统计 (最近7天)</h5>
+                <a href="{% url 'emotions:statistics' %}" class="btn btn-sm btn-outline-primary">查看详情</a>
+            </div>
+            <div class="card-body">
+                {% if emotion_stats %}
+                    <div class="list-group">
+                        {% for stat in emotion_stats %}
+                            <div class="list-group-item d-flex justify-content-between align-items-center">
+                                <span>
+                                    {% if stat.emotion == 'happy' %}😊 开心
+                                    {% elif stat.emotion == 'sad' %}😢 难过
+                                    {% elif stat.emotion == 'angry' %}😠 生气
+                                    {% elif stat.emotion == 'fear' %}😨 恐惧
+                                    {% elif stat.emotion == 'surprise' %}😲 惊讶
+                                    {% elif stat.emotion == 'disgust' %}🤢 厌恶
+                                    {% else %}😐 平静
+                                    {% endif %}
+                                </span>
+                                <span class="badge bg-primary rounded-pill">{{ stat.count }}</span>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="text-muted">暂无情绪记录</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- 最近打卡记录 -->
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">最近打卡记录</h5>
+                <a href="{% url 'checkins:record_list' %}" class="btn btn-sm btn-outline-primary">查看全部</a>
+            </div>
+            <div class="card-body">
+                {% if recent_checkins %}
+                    <div class="list-group">
+                        {% for record in recent_checkins %}
+                            <a href="{% url 'checkins:record_detail' record.id %}" class="list-group-item list-group-item-action">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h6 class="mb-1">{{ record.user.display_name|default:record.user.username }}</h6>
+                                    <small>{{ record.checkin_time|date:"m月d日 H:i" }}</small>
+                                </div>
+                                <p class="mb-1">{{ record.task.task_name }}</p>
+                                <small class="text-muted">
+                                    {% if record.status == 'on_time' %}
+                                        <span class="badge bg-success">准时</span>
+                                    {% elif record.status == 'late' %}
+                                        <span class="badge bg-warning">迟到</span>
+                                    {% else %}
+                                        <span class="badge bg-danger">补签</span>
+                                    {% endif %}
+                                </small>
+                            </a>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="text-muted">暂无打卡记录</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 快捷操作 -->
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">快捷操作</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-3 mb-2">
+                        <a href="{% url 'families:member_list' %}" class="btn btn-outline-primary w-100">
+                            <i class="bi bi-people"></i> 成员列表
+                        </a>
+                    </div>
+                    <div class="col-md-3 mb-2">
+                        <a href="{% url 'checkins:task_list' %}" class="btn btn-outline-primary w-100">
+                            <i class="bi bi-list-check"></i> 任务管理
+                        </a>
+                    </div>
+                    <div class="col-md-3 mb-2">
+                        <a href="{% url 'emotions:trends' %}" class="btn btn-outline-primary w-100">
+                            <i class="bi bi-graph-up"></i> 情绪趋势
+                        </a>
+                    </div>
+                    {% if user.is_family_admin %}
+                        <div class="col-md-3 mb-2">
+                            <a href="{% url 'families:generate_invite' %}" class="btn btn-outline-success w-100">
+                                <i class="bi bi-plus-circle"></i> 生成邀请码
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

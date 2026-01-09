@@ -1,0 +1,279 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}情绪统计 - 家庭情绪管理系统{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>情绪统计</h2>
+            <div>
+                <a href="{% url 'emotions:record_list' %}" class="btn btn-outline-secondary">记录列表</a>
+                <a href="{% url 'emotions:trends' %}" class="btn btn-outline-primary">情绪趋势</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 时间范围选择 -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <form method="get" class="row g-3 align-items-end">
+                    <div class="col-auto">
+                        <label for="days" class="form-label">统计时间范围</label>
+                        <select class="form-select" id="days" name="days" onchange="this.form.submit()">
+                            <option value="7" {% if days == 7 %}selected{% endif %}>最近7天</option>
+                            <option value="14" {% if days == 14 %}selected{% endif %}>最近14天</option>
+                            <option value="30" {% if days == 30 %}selected{% endif %}>最近30天</option>
+                            <option value="90" {% if days == 90 %}selected{% endif %}>最近90天</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 情绪分布统计 -->
+<div class="row mb-4">
+    <div class="col-lg-6 mb-4">
+        <div class="card h-100">
+            <div class="card-header">
+                <h5 class="mb-0">情绪分布</h5>
+            </div>
+            <div class="card-body">
+                {% if emotion_counts %}
+                    <canvas id="emotionPieChart" width="400" height="400"></canvas>
+                {% else %}
+                    <p class="text-muted text-center py-5">暂无数据</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-6 mb-4">
+        <div class="card h-100">
+            <div class="card-header">
+                <h5 class="mb-0">情绪统计详情</h5>
+            </div>
+            <div class="card-body">
+                {% if emotion_counts %}
+                    <div class="list-group">
+                        {% for item in emotion_counts %}
+                            <div class="list-group-item">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span style="font-size: 1.5rem;">
+                                        {% if item.emotion == 'happy' %}😊 开心
+                                        {% elif item.emotion == 'sad' %}😢 难过
+                                        {% elif item.emotion == 'angry' %}😠 生气
+                                        {% elif item.emotion == 'fear' %}😨 恐惧
+                                        {% elif item.emotion == 'surprise' %}😲 惊讶
+                                        {% elif item.emotion == 'disgust' %}🤢 厌恶
+                                        {% else %}😐 平静
+                                        {% endif %}
+                                    </span>
+                                    <span class="badge bg-primary rounded-pill" style="font-size: 1.2rem;">
+                                        {{ item.count }}
+                                    </span>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="text-muted text-center py-5">暂无数据</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 每日情绪趋势 -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">每日情绪趋势</h5>
+            </div>
+            <div class="card-body">
+                {% if daily_data %}
+                    <canvas id="dailyTrendChart" height="100"></canvas>
+                {% else %}
+                    <p class="text-muted text-center py-5">暂无数据</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 成员情绪统计 (仅管理员) -->
+{% if can_view_all and member_stats %}
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">成员情绪统计</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>成员</th>
+                                    <th>记录数</th>
+                                    <th>主要情绪</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for stat in member_stats %}
+                                    <tr>
+                                        <td>
+                                            <a href="{% url 'families:member_detail' stat.member.id %}">
+                                                {{ stat.member.display_name|default:stat.member.username }}
+                                            </a>
+                                        </td>
+                                        <td>{{ stat.total }}</td>
+                                        <td>
+                                            {% for emotion in stat.emotions|slice:":3" %}
+                                                <span style="font-size: 1.2rem;">
+                                                    {% if emotion.emotion == 'happy' %}😊
+                                                    {% elif emotion.emotion == 'sad' %}😢
+                                                    {% elif emotion.emotion == 'angry' %}😠
+                                                    {% elif emotion.emotion == 'fear' %}😨
+                                                    {% elif emotion.emotion == 'surprise' %}😲
+                                                    {% elif emotion.emotion == 'disgust' %}🤢
+                                                    {% else %}😐
+                                                    {% endif %}
+                                                </span>
+                                                <small>{{ emotion.count }}</small>
+                                            {% endfor %}
+                                        </td>
+                                        <td>
+                                            <a href="{% url 'emotions:trends' %}?member={{ stat.member.id }}" 
+                                               class="btn btn-sm btn-outline-primary">
+                                                查看趋势
+                                            </a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endif %}
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script>
+// 情绪分布饼图
+{% if emotion_counts %}
+const emotionLabels = [
+    {% for item in emotion_counts %}
+        '{% if item.emotion == "happy" %}开心{% elif item.emotion == "sad" %}难过{% elif item.emotion == "angry" %}生气{% elif item.emotion == "fear" %}恐惧{% elif item.emotion == "surprise" %}惊讶{% elif item.emotion == "disgust" %}厌恶{% else %}平静{% endif %}',
+    {% endfor %}
+];
+const emotionData = [{% for item in emotion_counts %}{{ item.count }},{% endfor %}];
+const emotionColors = [
+    {% for item in emotion_counts %}
+        '{% if item.emotion == "happy" %}#28a745{% elif item.emotion == "sad" %}#007bff{% elif item.emotion == "angry" %}#dc3545{% elif item.emotion == "fear" %}#ffc107{% elif item.emotion == "surprise" %}#17a2b8{% elif item.emotion == "disgust" %}#6c757d{% else %}#e0e0e0{% endif %}',
+    {% endfor %}
+];
+
+new Chart(document.getElementById('emotionPieChart'), {
+    type: 'pie',
+    data: {
+        labels: emotionLabels,
+        datasets: [{
+            data: emotionData,
+            backgroundColor: emotionColors
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            legend: {
+                position: 'bottom'
+            }
+        }
+    }
+});
+{% endif %}
+
+// 每日趋势图
+{% if daily_data %}
+const dailyLabels = [{% for day in daily_data %}'{{ day.date }}',{% endfor %}];
+const dailyDatasets = {};
+
+{% for day in daily_data %}
+    {% for emotion, count in day.data.items %}
+        if (!dailyDatasets['{{ emotion }}']) {
+            dailyDatasets['{{ emotion }}'] = [];
+        }
+    {% endfor %}
+{% endfor %}
+
+// 填充数据
+{% for day in daily_data %}
+    {% for emotion in 'happy,sad,angry,fear,surprise,disgust,neutral'.split ',' %}
+        if (dailyDatasets['{{ emotion }}']) {
+            dailyDatasets['{{ emotion }}'].push({{ day.data|get_item:emotion|default:0 }});
+        }
+    {% endfor %}
+{% endfor %}
+
+const emotionConfig = {
+    'happy': {label: '😊 开心', color: '#28a745'},
+    'sad': {label: '😢 难过', color: '#007bff'},
+    'angry': {label: '😠 生气', color: '#dc3545'},
+    'fear': {label: '😨 恐惧', color: '#ffc107'},
+    'surprise': {label: '😲 惊讶', color: '#17a2b8'},
+    'disgust': {label: '🤢 厌恶', color: '#6c757d'},
+    'neutral': {label: '😐 平静', color: '#e0e0e0'}
+};
+
+const datasets = [];
+for (const [emotion, data] of Object.entries(dailyDatasets)) {
+    if (data.length > 0) {
+        datasets.push({
+            label: emotionConfig[emotion].label,
+            data: data,
+            borderColor: emotionConfig[emotion].color,
+            backgroundColor: emotionConfig[emotion].color + '33',
+            tension: 0.4
+        });
+    }
+}
+
+new Chart(document.getElementById('dailyTrendChart'), {
+    type: 'line',
+    data: {
+        labels: dailyLabels,
+        datasets: datasets
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            legend: {
+                position: 'bottom'
+            }
+        },
+        scales: {
+            y: {
+                beginAtZero: true,
+                ticks: {
+                    stepSize: 1
+                }
+            }
+        }
+    }
+});
+{% endif %}
+</script>
+{% endblock %}

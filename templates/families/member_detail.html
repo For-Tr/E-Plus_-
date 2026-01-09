@@ -1,0 +1,177 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}{{ member.display_name|default:member.username }} - 成员详情{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'families:family_dashboard' %}">家庭管理</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'families:member_list' %}">成员列表</a></li>
+                <li class="breadcrumb-item active">成员详情</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<div class="row">
+    <!-- 成员基本信息 -->
+    <div class="col-md-4 mb-4">
+        <div class="card">
+            <div class="card-body text-center">
+                {% if member.avatar %}
+                    <img src="{{ member.avatar.url }}" class="rounded-circle mb-3" width="120" height="120" alt="{{ member.display_name }}">
+                {% else %}
+                    <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center mx-auto mb-3" 
+                         style="width: 120px; height: 120px; font-size: 48px;">
+                        {{ member.display_name|default:member.username|first }}
+                    </div>
+                {% endif %}
+                
+                <h4>{{ member.display_name|default:member.username }}</h4>
+                <p class="text-muted">@{{ member.username }}</p>
+                
+                {% if member.is_family_admin %}
+                    <span class="badge bg-warning mb-3">家庭管理员</span>
+                {% else %}
+                    <span class="badge bg-info mb-3">家庭成员</span>
+                {% endif %}
+                
+                <hr>
+                
+                <div class="text-start">
+                    <p class="mb-2"><strong>邮箱:</strong> {{ member.email|default:"-" }}</p>
+                    <p class="mb-2"><strong>手机:</strong> {{ member.phone|default:"-" }}</p>
+                    <p class="mb-2"><strong>加入时间:</strong> {{ member.date_joined|date:"Y-m-d H:i" }}</p>
+                    <p class="mb-0"><strong>人脸状态:</strong> 
+                        {% if member.face_registered %}
+                            <span class="badge bg-success">已注册</span>
+                        {% else %}
+                            <span class="badge bg-secondary">未注册</span>
+                        {% endif %}
+                    </p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 统计卡片 -->
+        <div class="card mt-3">
+            <div class="card-header">
+                <h6 class="mb-0">统计信息 (最近30天)</h6>
+            </div>
+            <div class="card-body">
+                <div class="row g-2">
+                    <div class="col-6">
+                        <div class="text-center p-3 bg-light rounded">
+                            <h4 class="mb-0">{{ total_checkins }}</h4>
+                            <small class="text-muted">打卡次数</small>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="text-center p-3 bg-light rounded">
+                            <h4 class="mb-0">{{ on_time_count }}</h4>
+                            <small class="text-muted">准时次数</small>
+                        </div>
+                    </div>
+                    <div class="col-12 mt-2">
+                        <div class="text-center p-3 bg-primary text-white rounded">
+                            <h4 class="mb-0">{{ checkin_rate }}%</h4>
+                            <small>准时率</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 打卡记录 -->
+    <div class="col-md-8 mb-4">
+        <div class="card mb-3">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">打卡记录</h5>
+                <small class="text-muted">最近30天</small>
+            </div>
+            <div class="card-body">
+                {% if checkin_records %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>任务名称</th>
+                                    <th>打卡时间</th>
+                                    <th>状态</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for record in checkin_records %}
+                                    <tr>
+                                        <td>{{ record.task.task_name }}</td>
+                                        <td>{{ record.checkin_time|date:"m月d日 H:i" }}</td>
+                                        <td>
+                                            {% if record.status == 'on_time' %}
+                                                <span class="badge bg-success">准时</span>
+                                            {% elif record.status == 'late' %}
+                                                <span class="badge bg-warning">迟到</span>
+                                            {% else %}
+                                                <span class="badge bg-danger">补签</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <a href="{% url 'checkins:record_detail' record.id %}" class="btn btn-sm btn-outline-primary">
+                                                查看
+                                            </a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <p class="text-muted text-center py-3">暂无打卡记录</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- 情绪记录 -->
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">情绪记录</h5>
+                <a href="{% url 'emotions:trends' %}?member={{ member.id }}" class="btn btn-sm btn-outline-primary">
+                    查看趋势
+                </a>
+            </div>
+            <div class="card-body">
+                {% if emotion_records %}
+                    <div class="list-group">
+                        {% for record in emotion_records %}
+                            <a href="{% url 'emotions:record_detail' record.id %}" class="list-group-item list-group-item-action">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h6 class="mb-1">
+                                        {% if record.emotion == 'happy' %}😊 开心
+                                        {% elif record.emotion == 'sad' %}😢 难过
+                                        {% elif record.emotion == 'angry' %}😠 生气
+                                        {% elif record.emotion == 'fear' %}😨 恐惧
+                                        {% elif record.emotion == 'surprise' %}😲 惊讶
+                                        {% elif record.emotion == 'disgust' %}🤢 厌恶
+                                        {% else %}😐 平静
+                                        {% endif %}
+                                    </h6>
+                                    <small>{{ record.recorded_at|date:"m月d日 H:i" }}</small>
+                                </div>
+                                {% if record.confidence %}
+                                    <small class="text-muted">置信度: {{ record.confidence|floatformat:2 }}%</small>
+                                {% endif %}
+                            </a>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="text-muted text-center py-3">暂无情绪记录</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

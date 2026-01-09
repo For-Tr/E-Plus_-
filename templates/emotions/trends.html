@@ -1,0 +1,207 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}情绪趋势 - 家庭情绪管理系统{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>情绪趋势分析</h2>
+            <div>
+                <a href="{% url 'emotions:record_list' %}" class="btn btn-outline-secondary">记录列表</a>
+                <a href="{% url 'emotions:statistics' %}" class="btn btn-outline-info">统计分析</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 筛选条件 -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <form method="get" class="row g-3">
+                    {% if can_view_all %}
+                        <div class="col-md-4">
+                            <label for="member" class="form-label">选择成员</label>
+                            <select class="form-select" id="member" name="member" onchange="this.form.submit()">
+                                {% for m in members %}
+                                    <option value="{{ m.id }}" {% if member.id == m.id %}selected{% endif %}>
+                                        {{ m.display_name|default:m.username }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    {% endif %}
+                    
+                    <div class="col-md-4">
+                        <label for="days" class="form-label">时间范围</label>
+                        <select class="form-select" id="days" name="days" onchange="this.form.submit()">
+                            <option value="7" {% if days == 7 %}selected{% endif %}>最近7天</option>
+                            <option value="14" {% if days == 14 %}selected{% endif %}>最近14天</option>
+                            <option value="30" {% if days == 30 %}selected{% endif %}>最近30天</option>
+                            <option value="90" {% if days == 90 %}selected{% endif %}>最近90天</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 成员信息卡片 -->
+<div class="row mb-4">
+    <div class="col-md-3 mb-3">
+        <div class="card text-center">
+            <div class="card-body">
+                {% if member.avatar %}
+                    <img src="{{ member.avatar.url }}" class="rounded-circle mb-2" width="80" height="80" alt="{{ member.display_name }}">
+                {% else %}
+                    <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center mx-auto mb-2" 
+                         style="width: 80px; height: 80px; font-size: 32px;">
+                        {{ member.display_name|default:member.username|first }}
+                    </div>
+                {% endif %}
+                <h5>{{ member.display_name|default:member.username }}</h5>
+                <p class="text-muted mb-0">@{{ member.username }}</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3 mb-3">
+        <div class="card bg-primary text-white">
+            <div class="card-body text-center">
+                <h6 class="card-title">记录总数</h6>
+                <h2 class="mb-0">{{ total_count }}</h2>
+                <small>条情绪记录</small>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3 mb-3">
+        <div class="card {% if is_alert %}bg-danger{% else %}bg-info{% endif %} text-white">
+            <div class="card-body text-center">
+                <h6 class="card-title">消极情绪</h6>
+                <h2 class="mb-0">{{ negative_count }}</h2>
+                <small>{{ negative_rate }}% 占比</small>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3 mb-3">
+        <div class="card {% if is_alert %}bg-warning{% else %}bg-success{% endif %} text-white">
+            <div class="card-body text-center">
+                <h6 class="card-title">情绪状态</h6>
+                <h2 class="mb-0">
+                    {% if is_alert %}⚠️{% else %}✅{% endif %}
+                </h2>
+                <small>{% if is_alert %}需要关注{% else %}状态良好{% endif %}</small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 情绪趋势图 -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">每日主导情绪趋势</h5>
+            </div>
+            <div class="card-body">
+                {% if daily_trend %}
+                    <div class="timeline">
+                        {% for day in daily_trend %}
+                            <div class="timeline-item mb-3">
+                                <div class="row align-items-center">
+                                    <div class="col-md-2">
+                                        <strong>{{ day.date }}</strong>
+                                    </div>
+                                    <div class="col-md-2 text-center">
+                                        <span style="font-size: 2rem;">
+                                            {% if day.emotion == 'happy' %}😊
+                                            {% elif day.emotion == 'sad' %}😢
+                                            {% elif day.emotion == 'angry' %}😠
+                                            {% elif day.emotion == 'fear' %}😨
+                                            {% elif day.emotion == 'surprise' %}😲
+                                            {% elif day.emotion == 'disgust' %}🤢
+                                            {% else %}😐
+                                            {% endif %}
+                                        </span>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <div class="d-flex align-items-center">
+                                            <span class="me-2">
+                                                {% if day.emotion == 'happy' %}开心
+                                                {% elif day.emotion == 'sad' %}难过
+                                                {% elif day.emotion == 'angry' %}生气
+                                                {% elif day.emotion == 'fear' %}恐惧
+                                                {% elif day.emotion == 'surprise' %}惊讶
+                                                {% elif day.emotion == 'disgust' %}厌恶
+                                                {% else %}平静
+                                                {% endif %}
+                                            </span>
+                                            <span class="badge bg-secondary">{{ day.count }}条记录</span>
+                                        </div>
+                                        <div class="mt-2">
+                                            {% for emotion, count in day.distribution.items %}
+                                                <span class="badge bg-light text-dark me-1">
+                                                    {% if emotion == 'happy' %}😊
+                                                    {% elif emotion == 'sad' %}😢
+                                                    {% elif emotion == 'angry' %}😠
+                                                    {% elif emotion == 'fear' %}😨
+                                                    {% elif emotion == 'surprise' %}😲
+                                                    {% elif emotion == 'disgust' %}🤢
+                                                    {% else %}😐
+                                                    {% endif %}
+                                                    {{ count }}
+                                                </span>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="text-muted text-center py-5">所选时间段内暂无情绪记录</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 异常情绪提醒 -->
+{% if is_alert %}
+    <div class="row">
+        <div class="col-12">
+            <div class="alert alert-warning">
+                <h5 class="alert-heading">⚠️ 情绪异常提醒</h5>
+                <p class="mb-0">
+                    检测到 <strong>{{ member.display_name|default:member.username }}</strong> 在过去 {{ days }} 天内有 
+                    <strong>{{ negative_rate }}%</strong> 的消极情绪记录({{ negative_count }}/{{ total_count }})，
+                    建议家庭管理员关注该成员的心理状态。
+                </p>
+                <hr>
+                <p class="mb-0">
+                    <a href="{% url 'families:member_detail' member.id %}" class="btn btn-sm btn-warning">
+                        查看成员详情
+                    </a>
+                </p>
+            </div>
+        </div>
+    </div>
+{% endif %}
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.timeline-item {
+    padding: 15px;
+    background: #f8f9fa;
+    border-left: 3px solid #007bff;
+    border-radius: 5px;
+}
+</style>
+{% endblock %}

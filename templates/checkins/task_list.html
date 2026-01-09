@@ -1,0 +1,98 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}打卡任务列表 - 家庭情绪管理系统{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>打卡任务列表</h2>
+            {% if can_manage %}
+                <a href="{% url 'checkins:create_task' %}" class="btn btn-primary">
+                    <i class="bi bi-plus-circle"></i> 创建新任务
+                </a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    {% if tasks %}
+        {% for task in tasks %}
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card h-100 {% if not task.is_active %}border-secondary{% endif %}">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <h5 class="card-title mb-0">{{ task.task_name }}</h5>
+                            {% if task.is_active %}
+                                <span class="badge bg-success">进行中</span>
+                            {% else %}
+                                <span class="badge bg-secondary">已停用</span>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="mb-3">
+                            <p class="mb-2">
+                                <strong>任务类型:</strong>
+                                {% if task.task_type == 'daily' %}
+                                    <span class="badge bg-primary">每日</span>
+                                {% elif task.task_type == 'weekly' %}
+                                    <span class="badge bg-info">每周</span>
+                                {% elif task.task_type == 'custom' %}
+                                    <span class="badge bg-warning">自定义</span>
+                                {% endif %}
+                            </p>
+                            <p class="mb-2">
+                                <strong>创建者:</strong> {{ task.created_by.display_name|default:task.created_by.username }}
+                            </p>
+                            <p class="mb-0">
+                                <strong>创建时间:</strong> {{ task.created_at|date:"Y-m-d" }}
+                            </p>
+                        </div>
+                        
+                        <div class="row g-2 mb-3">
+                            <div class="col-6">
+                                <div class="text-center p-2 bg-light rounded">
+                                    <div class="fw-bold">{{ task.total_records }}</div>
+                                    <small class="text-muted">总打卡数</small>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="text-center p-2 bg-light rounded">
+                                    <div class="fw-bold">{{ task.today_records }}</div>
+                                    <small class="text-muted">今日打卡</small>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="d-flex gap-2">
+                            <a href="{% url 'checkins:task_detail' task.id %}" class="btn btn-outline-primary btn-sm flex-fill">
+                                查看详情
+                            </a>
+                            {% if can_manage %}
+                                <a href="{% url 'checkins:edit_task' task.id %}" class="btn btn-outline-secondary btn-sm flex-fill">
+                                    编辑
+                                </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body text-center py-5">
+                    <p class="text-muted mb-3">还没有创建任何打卡任务</p>
+                    {% if can_manage %}
+                        <a href="{% url 'checkins:create_task' %}" class="btn btn-primary">
+                            立即创建
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
