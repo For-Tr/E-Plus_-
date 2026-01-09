@@ -97,6 +97,15 @@ class InviteCode(models.Model):
     display_name_for = models.CharField('指定显示名称', max_length=100, blank=True)
     max_uses = models.IntegerField('最大使用次数', default=1)
     used_count = models.IntegerField('已使用次数', default=0)
+    used_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='used_invites',
+        verbose_name='使用者'
+    )
+    used_at = models.DateTimeField('使用时间', null=True, blank=True)
     expires_at = models.DateTimeField('过期时间', null=True, blank=True)
     status = models.CharField('状态', max_length=20, choices=STATUS_CHOICES, default=STATUS_ACTIVE)
     

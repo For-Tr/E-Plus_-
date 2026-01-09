@@ -1,0 +1,157 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}注册人脸 - 家庭情绪管理系统{% endblock %}
+
+{% block extra_css %}
+<style>
+    #video {
+        width: 100%;
+        max-width: 640px;
+        border: 2px solid #ddd;
+        border-radius: 8px;
+    }
+    #canvas {
+        display: none;
+    }
+    .photo-preview {
+        width: 100px;
+        height: 100px;
+        object-fit: cover;
+        border: 2px solid #ddd;
+        border-radius: 8px;
+        margin: 5px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <h2 class="mb-4">注册人脸</h2>
+        
+        <div class="alert alert-info">
+            <strong>提示：</strong>需要拍摄至少3张不同角度的人脸照片，系统会自动识别并保存您的人脸特征。
+        </div>
+        
+        <div class="card shadow-sm mb-4">
+            <div class="card-body text-center">
+                <video id="video" autoplay playsinline></video>
+                <canvas id="canvas"></canvas>
+                
+                <div class="mt-3">
+                    <button id="captureBtn" class="btn btn-primary btn-lg">拍摄照片</button>
+                    <button id="submitBtn" class="btn btn-success btn-lg" style="display:none;">提交注册</button>
+                </div>
+                
+                <div class="mt-3">
+                    <p>已拍摄：<span id="photoCount">0</span> / 3 张</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h5>拍摄的照片</h5>
+                <div id="photoPreview" class="d-flex flex-wrap justify-content-center"></div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    const video = document.getElementById('video');
+    const canvas = document.getElementById('canvas');
+    const captureBtn = document.getElementById('captureBtn');
+    const submitBtn = document.getElementById('submitBtn');
+    const photoPreview = document.getElementById('photoPreview');
+    const photoCount = document.getElementById('photoCount');
+    
+    let photos = [];
+    const MIN_PHOTOS = 3;
+    
+    // 启动摄像头
+    async function startCamera() {
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({ 
+                video: { facingMode: 'user' } 
+            });
+            video.srcObject = stream;
+        } catch (err) {
+            alert('无法访问摄像头：' + err.message);
+        }
+    }
+    
+    // 拍摄照片
+    captureBtn.addEventListener('click', function() {
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(video, 0, 0);
+        
+        canvas.toBlob(function(blob) {
+            photos.push(blob);
+            
+            // 显示预览
+            const img = document.createElement('img');
+            img.src = URL.createObjectURL(blob);
+            img.className = 'photo-preview';
+            photoPreview.appendChild(img);
+            
+            // 更新计数
+            photoCount.textContent = photos.length;
+            
+            // 显示提交按钮
+            if (photos.length >= MIN_PHOTOS) {
+                submitBtn.style.display = 'inline-block';
+            }
+        }, 'image/jpeg');
+    });
+    
+    // 提交注册
+    submitBtn.addEventListener('click', async function() {
+        if (photos.length < MIN_PHOTOS) {
+            alert('至少需要拍摄3张照片');
+            return;
+        }
+        
+        const formData = new FormData();
+        photos.forEach((photo, index) => {
+            formData.append('photos', photo, `face_${index}.jpg`);
+        });
+        
+        try {
+            submitBtn.disabled = true;
+            submitBtn.textContent = '处理中...';
+            
+            const response = await fetch('{% url "users_api:register_face" %}', {
+                method: 'POST',
+                headers: {
+                    'Authorization': 'Bearer ' + localStorage.getItem('access_token')
+                },
+                body: formData
+            });
+            
+            const data = await response.json();
+            
+            if (response.ok) {
+                alert('人脸注册成功！');
+                window.location.href = '{% url "users:profile" %}';
+            } else {
+                alert('注册失败：' + (data.error || '未知错误'));
+                submitBtn.disabled = false;
+                submitBtn.textContent = '提交注册';
+            }
+        } catch (err) {
+            alert('网络错误：' + err.message);
+            submitBtn.disabled = false;
+            submitBtn.textContent = '提交注册';
+        }
+    });
+    
+    // 启动
+    startCamera();
+</script>
+{% endblock %}

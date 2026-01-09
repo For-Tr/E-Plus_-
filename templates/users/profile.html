@@ -1,0 +1,125 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}个人资料 - 家庭情绪管理系统{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 mx-auto">
+        <h2 class="mb-4">个人资料</h2>
+        
+        <div class="card shadow-sm mb-4">
+            <div class="card-body">
+                <h5 class="card-title">基本信息</h5>
+                <table class="table table-borderless">
+                    <tbody>
+                        <tr>
+                            <th width="150">用户名：</th>
+                            <td>{{ user.username }}</td>
+                        </tr>
+                        <tr>
+                            <th>显示名称：</th>
+                            <td>{{ user.display_name|default:"未设置" }}</td>
+                        </tr>
+                        <tr>
+                            <th>邮箱：</th>
+                            <td>{{ user.email|default:"未设置" }}</td>
+                        </tr>
+                        <tr>
+                            <th>手机号：</th>
+                            <td>{{ user.phone|default:"未设置" }}</td>
+                        </tr>
+                        <tr>
+                            <th>角色：</th>
+                            <td>{{ user.get_role_display }}</td>
+                        </tr>
+                        <tr>
+                            <th>账户状态：</th>
+                            <td>{{ user.get_status_display }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        {% if user.family %}
+        <div class="card shadow-sm mb-4">
+            <div class="card-body">
+                <h5 class="card-title">家庭信息</h5>
+                <table class="table table-borderless">
+                    <tbody>
+                        <tr>
+                            <th width="150">家庭名称：</th>
+                            <td>{{ user.family.family_name }}</td>
+                        </tr>
+                        <tr>
+                            <th>家庭编码：</th>
+                            <td>{{ user.family.family_code }}</td>
+                        </tr>
+                        <tr>
+                            <th>成员数量：</th>
+                            <td>{{ user.family.member_count }}人</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {% endif %}
+        
+        <div class="card shadow-sm mb-4">
+            <div class="card-body">
+                <h5 class="card-title">人脸识别</h5>
+                <table class="table table-borderless">
+                    <tbody>
+                        <tr>
+                            <th width="150">人脸注册状态：</th>
+                            <td>
+                                {% if user.face_registered %}
+                                    <span class="badge bg-success">已注册</span>
+                                {% else %}
+                                    <span class="badge bg-warning">未注册</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>人脸照片数量：</th>
+                            <td>{{ user.face_encodings_count }}张</td>
+                        </tr>
+                    </tbody>
+                </table>
+                {% if not user.face_registered %}
+                <a href="{% url 'users:register_face' %}" class="btn btn-primary">注册人脸</a>
+                {% endif %}
+            </div>
+        </div>
+        
+        <div class="card shadow-sm mb-4">
+            <div class="card-body">
+                <h5 class="card-title">账户操作</h5>
+                <div class="d-flex gap-2">
+                    <a href="{% url 'users:edit_profile' %}" class="btn btn-primary">编辑资料</a>
+                    <a href="{% url 'users:change_password' %}" class="btn btn-secondary">修改密码</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title">其他信息</h5>
+                <table class="table table-borderless">
+                    <tbody>
+                        <tr>
+                            <th width="150">注册时间：</th>
+                            <td>{{ user.date_joined|date:"Y-m-d H:i:s" }}</td>
+                        </tr>
+                        <tr>
+                            <th>最后登录：</th>
+                            <td>{{ user.last_login|date:"Y-m-d H:i:s"|default:"从未登录" }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

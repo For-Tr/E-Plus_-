@@ -51,7 +51,59 @@ def logout_view(request):
 
 @require_http_methods(["GET", "POST"])
 def register_view(request):
-    """注册(需要邀请码)"""
+    """注册家庭管理员"""
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        password_confirm = request.POST.get('password_confirm')
+        display_name = request.POST.get('display_name')
+        email = request.POST.get('email')
+        family_name = request.POST.get('family_name')
+        
+        # 验证密码
+        if password != password_confirm:
+            messages.error(request, '两次输入的密码不一致')
+            return render(request, 'users/register.html')
+        
+        # 检查用户名是否已存在
+        from users.models import User
+        if User.objects.filter(username=username).exists():
+            messages.error(request, '用户名已存在')
+            return render(request, 'users/register.html')
+        
+        # 创建家庭
+        from families.models import Family
+        family = Family.objects.create(
+            family_name=family_name,
+            admin=None  # 临时设置为None，稍后更新
+        )
+        
+        # 创建家庭管理员用户
+        user = User.objects.create_user(
+            username=username,
+            password=password,
+            display_name=display_name or username,
+            email=email,
+            role=User.FAMILY_ADMIN,
+            family=family,
+            is_staff=False
+        )
+        
+        # 更新家庭管理员
+        family.admin = user
+        family.save()
+        
+        # 自动登录
+        login(request, user)
+        messages.success(request, '注册成功！欢迎使用家庭情绪管理系统')
+        return redirect('families:dashboard')
+    
+    return render(request, 'users/register.html')
+
+
+@require_http_methods(["GET", "POST"])
+def register_member_view(request):
+    """家庭成员注册(通过邀请码)"""
     if request.method == 'POST':
         invite_code = request.POST.get('invite_code')
         password = request.POST.get('password')
@@ -62,15 +114,15 @@ def register_view(request):
             invite = InviteCode.objects.get(code=invite_code)
             if not invite.is_valid():
                 messages.error(request, '邀请码无效或已过期')
-                return render(request, 'users/register.html')
+                return render(request, 'users/register_member.html')
         except InviteCode.DoesNotExist:
             messages.error(request, '邀请码不存在')
-            return render(request, 'users/register.html')
+            return render(request, 'users/register_member.html')
         
         # 验证密码
         if password != password_confirm:
             messages.error(request, '两次输入的密码不一致')
-            return render(request, 'users/register.html')
+            return render(request, 'users/register_member.html')
         
         # 创建用户
         from users.models import User
@@ -93,7 +145,7 @@ def register_view(request):
     
     # GET请求，可能带有邀请码参数
     invite_code = request.GET.get('code', '')
-    return render(request, 'users/register.html', {'invite_code': invite_code})
+    return render(request, 'users/register_member.html', {'invite_code': invite_code})
 
 
 def accept_invite(request, code):
@@ -103,7 +155,7 @@ def accept_invite(request, code):
         if not invite.is_valid():
             messages.error(request, '邀请码无效或已过期')
             return redirect('users:index')
-        return redirect(f'/register/?code={code}')
+        return redirect(f'/register/member/?code={code}')
     except InviteCode.DoesNotExist:
         messages.error(request, '邀请码不存在')
         return redirect('users:index')

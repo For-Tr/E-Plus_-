@@ -13,7 +13,8 @@ urlpatterns = [
     # 认证相关
     path('login/', views.login_view, name='login'),
     path('logout/', views.logout_view, name='logout'),
-    path('register/', views.register_view, name='register'),
+    path('register/', views.register_view, name='register'),  # 家庭管理员注册
+    path('register/member/', views.register_member_view, name='register_member'),  # 家庭成员注册
     path('accept-invite/<str:code>/', views.accept_invite, name='accept_invite'),
     
     # 用户中心

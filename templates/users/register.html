@@ -1,0 +1,77 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}注册家庭管理员 - 家庭情绪管理系统{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6 col-lg-5">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h3 class="card-title text-center mb-4">注册家庭管理员</h3>
+                
+                <div class="alert alert-info">
+                    <small>
+                        <strong>提示：</strong>注册成功后，您将创建一个新家庭并成为该家庭的管理员。<br>
+                        您可以邀请家庭成员加入，管理打卡任务和查看家庭成员的情绪记录。
+                    </small>
+                </div>
+                
+                <form method="post" action="{% url 'users:register' %}">
+                    {% csrf_token %}
+                    
+                    <div class="mb-3">
+                        <label for="username" class="form-label">用户名 <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="username" name="username" 
+                               required autofocus minlength="3" maxlength="50">
+                        <div class="form-text">用于登录，3-50个字符，仅支持字母、数字和下划线</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="display_name" class="form-label">显示名称</label>
+                        <input type="text" class="form-control" id="display_name" name="display_name" 
+                               maxlength="100">
+                        <div class="form-text">用于显示，不填写则使用用户名</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="email" class="form-label">邮箱</label>
+                        <input type="email" class="form-control" id="email" name="email">
+                        <div class="form-text">用于接收通知邮件</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="family_name" class="form-label">家庭名称 <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="family_name" name="family_name" 
+                               required maxlength="100">
+                        <div class="form-text">为您的家庭起一个名字</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="password" class="form-label">密码 <span class="text-danger">*</span></label>
+                        <input type="password" class="form-control" id="password" name="password" 
+                               required minlength="6">
+                        <div class="form-text">密码长度至少6位</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="password_confirm" class="form-label">确认密码 <span class="text-danger">*</span></label>
+                        <input type="password" class="form-control" id="password_confirm" 
+                               name="password_confirm" required minlength="6">
+                    </div>
+                    
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary btn-lg">注册</button>
+                    </div>
+                </form>
+                
+                <div class="text-center mt-3">
+                    <p class="text-muted">
+                        已有账号？<a href="{% url 'users:login' %}">立即登录</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
