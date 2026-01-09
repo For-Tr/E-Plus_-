@@ -6,7 +6,8 @@
     "versionName": "1.0.0",
     "icon": "$media:app_icon",
     "label": "$string:app_name",
-    "compatibleSdkVersion": "5.0.0(12)",
-    "targetSdkVersion": "5.0.0(12)"
+    "minAPIVersion": 12,
+    "targetAPIVersion": 12,
+    "apiReleaseType": "Release"
   }
 }

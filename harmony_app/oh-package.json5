@@ -1,4 +1,5 @@
 {
+  "modelVersion": "6.0.1",
   "name": "family-emotion-app",
   "version": "1.0.0",
   "description": "Family Emotion Check-in System",
