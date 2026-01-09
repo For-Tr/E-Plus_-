@@ -43,9 +43,12 @@ struct Index {
 
     try {
       // 调用邀请码登录API
+      const requestBody: ESObject = {
+        'invite_code': this.inviteCode.trim().toUpperCase()
+      }
       const response = await HttpUtil.post<LoginResponse>(
         ApiEndpoints.INVITE_LOGIN,
-        { invite_code: this.inviteCode.trim().toUpperCase() },
+        requestBody,
         false  // 登录时不需要Token
       )
 

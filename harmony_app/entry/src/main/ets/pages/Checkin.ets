@@ -5,8 +5,8 @@ import router from '@ohos.router'
 import promptAction from '@ohos.promptAction'
 import HttpUtil from '../common/utils/HttpUtil'
 import CameraUtil from '../common/utils/CameraUtil'
-import { ApiEndpoints, EMOTION_NAMES, ErrorMessages } from '../common/constants/AppConstants'
-import { CheckinTaskListResponse } from '../models/CheckinTask'
+import { ApiEndpoints, EmotionNames, ErrorMessages } from '../common/constants/AppConstants'
+import { CheckinTask, CheckinTaskListResponse } from '../models/CheckinTask'
 import { CheckinCreateRequest, CheckinRecord } from '../models/CheckinRecord'
 
 @Entry
@@ -14,7 +14,7 @@ import { CheckinCreateRequest, CheckinRecord } from '../models/CheckinRecord'
 struct Checkin {
   @State isLoading: boolean = false
   @State message: string = ''
-  @State currentTask: any = null
+  @State currentTask: CheckinTask | null = null
   @State capturedImage: string = ''
   @State checkinResult: CheckinRecord | null = null
   @State step: number = 1  // 1:任务说明 2:拍照 3:结果展示
@@ -316,7 +316,7 @@ struct Checkin {
                     .fontSize(16)
                     .fontColor('#666')
                   Blank()
-                  Text(EMOTION_NAMES[this.checkinResult.emotion] || this.checkinResult.emotion)
+                  Text(EmotionNames.get(this.checkinResult.emotion))
                     .fontSize(20)
                     .fontWeight(FontWeight.Medium)
                 }

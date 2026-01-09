@@ -4,7 +4,7 @@
 import router from '@ohos.router'
 import promptAction from '@ohos.promptAction'
 import HttpUtil from '../common/utils/HttpUtil'
-import { ApiEndpoints, EMOTION_NAMES, ErrorMessages } from '../common/constants/AppConstants'
+import { ApiEndpoints, EmotionNames, ErrorMessages } from '../common/constants/AppConstants'
 import { CheckinRecordListResponse, CheckinRecord } from '../models/CheckinRecord'
 
 @Entry
@@ -162,7 +162,7 @@ struct History {
 
                     // 情绪
                     if (record.emotion) {
-                      Text(EMOTION_NAMES[record.emotion] || record.emotion)
+                      Text(EmotionNames.get(record.emotion))
                         .fontSize(20)
                     }
                   }
