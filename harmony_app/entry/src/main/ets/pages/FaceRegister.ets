@@ -8,6 +8,12 @@ import StorageUtil from '../common/utils/StorageUtil'
 import CameraUtil from '../common/utils/CameraUtil'
 import { ApiEndpoints, StorageKeys, AppConfig, ErrorMessages } from '../common/constants/AppConstants'
 
+// 定义响应接口
+interface UploadResponse {
+  success: boolean
+  error?: string
+}
+
 @Entry
 @Component
 struct FaceRegister {
@@ -75,7 +81,7 @@ struct FaceRegister {
     this.message = '正在注册人脸...'
 
     try {
-      const response: { success: boolean; error?: string } = await HttpUtil.uploadImage(
+      const response: UploadResponse = await HttpUtil.uploadImage(
         ApiEndpoints.FACE_REGISTER,
         this.capturedImage,
         'photo'

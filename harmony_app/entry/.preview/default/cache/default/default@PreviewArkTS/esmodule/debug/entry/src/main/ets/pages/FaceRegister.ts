@@ -140,7 +140,10 @@ class FaceRegister extends ViewPU {
         this.isLoading = true;
         this.message = '正在注册人脸...';
         try {
-            const response = await HttpUtil.uploadImage(ApiEndpoints.FACE_REGISTER, this.capturedImage, 'photo');
+            const response: {
+                success: boolean;
+                error?: string;
+            } = await HttpUtil.uploadImage(ApiEndpoints.FACE_REGISTER, this.capturedImage, 'photo');
             if (response.success) {
                 // 更新本地人脸注册状态
                 await StorageUtil.setBoolean(StorageKeys.IS_FACE_REGISTERED, true);
