@@ -71,27 +71,27 @@ def register_view(request):
             messages.error(request, '用户名已存在')
             return render(request, 'users/register.html')
         
-        # 创建家庭
-        from families.models import Family
-        family = Family.objects.create(
-            family_name=family_name,
-            admin=None  # 临时设置为None，稍后更新
-        )
-        
-        # 创建家庭管理员用户
+        # 先创建用户（不关联家庭）
         user = User.objects.create_user(
             username=username,
             password=password,
             display_name=display_name or username,
             email=email,
             role=User.FAMILY_ADMIN,
-            family=family,
+            family=None,  # 暂时不关联家庭
             is_staff=False
         )
         
-        # 更新家庭管理员
-        family.admin = user
-        family.save()
+        # 创建家庭并设置管理员
+        from families.models import Family
+        family = Family.objects.create(
+            family_name=family_name,
+            admin=user
+        )
+        
+        # 更新用户的家庭关联
+        user.family = family
+        user.save()
         
         # 自动登录
         login(request, user)
