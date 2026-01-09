@@ -2,8 +2,9 @@
  * HTTP请求工具类 - 符合ArkTS规范
  */
 import http from '@ohos.net.http'
-import { API_BASE_URL, API_TIMEOUT, StorageKeys } from '../constants/AppConstants'
+import { API_BASE_URL, API_TIMEOUT, StorageKeys, USE_MOCK_DATA } from '../constants/AppConstants'
 import StorageUtil from './StorageUtil'
+import MockData from './MockData'
 
 // 定义请求头类型
 class RequestHeaders {
@@ -54,6 +55,17 @@ class HttpUtil {
     const headers = options.headers ?? {}
     const body: ESObject | null = options.body ?? null
     const needAuth = options.needAuth ?? true
+
+    // 如果启用Mock模式,直接返回Mock数据
+    if (USE_MOCK_DATA) {
+      console.info('[HttpUtil] ========== USING MOCK DATA ==========')
+      console.info(`[HttpUtil] Mock Request: ${method} ${url}`)
+      console.info(`[HttpUtil] Mock Body: ${JSON.stringify(body)}`)
+      const methodStr = this.getMethodString(method)
+      const mockResult = await MockData.getMockData(url, methodStr, body ?? undefined) as ApiResponse<T>
+      console.info(`[HttpUtil] Mock Response: ${JSON.stringify(mockResult)}`)
+      return mockResult
+    }
 
     try {
       // 创建HTTP请求
@@ -213,6 +225,24 @@ class HttpUtil {
         success: false,
         error: '图片上传失败'
       }
+    }
+  }
+
+  /**
+   * 将HTTP方法枚举转为字符串
+   */
+  private getMethodString(method: http.RequestMethod): string {
+    switch (method) {
+      case http.RequestMethod.GET:
+        return 'GET'
+      case http.RequestMethod.POST:
+        return 'POST'
+      case http.RequestMethod.PUT:
+        return 'PUT'
+      case http.RequestMethod.DELETE:
+        return 'DELETE'
+      default:
+        return 'GET'
     }
   }
 }

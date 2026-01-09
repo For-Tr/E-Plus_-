@@ -68,22 +68,28 @@ struct Index {
           duration: 2000
         })
 
-        // 检查是否已注册人脸
-        if (!response.data.user.face_registered) {
-          // 未注册人脸,跳转到人脸注册页面
-          setTimeout(() => {
-            router.replaceUrl({
-              url: AppConfig.PAGE_FACE_REGISTER
+        // 登录流程到此结束,标记为成功
+        this.isLoading = false
+        
+        // 检查是否已注册人脸 - 在预览器中这个路由跳转会失败,但不影响登录本身
+        const targetPage = !response.data.user.face_registered ? 
+          AppConfig.PAGE_FACE_REGISTER : AppConfig.PAGE_HOME
+        
+        console.info('[Index] Preparing to navigate to:', targetPage)
+        
+        // 延迟跳转,完全独立于登录流程
+        setTimeout(() => {
+          router.replaceUrl({ url: targetPage })
+            .then(() => {
+              console.info('[Index] Navigation successful')
             })
-          }, 1000)
-        } else {
-          // 已注册人脸,跳转到主页
-          setTimeout(() => {
-            router.replaceUrl({
-              url: AppConfig.PAGE_HOME
+            .catch((err: Error) => {
+              // 预览器不支持路由跳转,这是正常的
+              console.warn('[Index] Navigation failed (预览器限制):', JSON.stringify(err))
             })
-          }, 1000)
-        }
+        }, 1000)
+        
+        return // 提前返回,避免执行失败分支
       } else {
         // 登录失败
         this.message = response.error || ErrorMessages.LOGIN_FAILED
@@ -100,7 +106,10 @@ struct Index {
         duration: 3000
       })
     } finally {
-      this.isLoading = false
+      // 只有登录失败时才设置为false,成功时已经提前设置了
+      if (this.isLoading) {
+        this.isLoading = false
+      }
     }
   }
 

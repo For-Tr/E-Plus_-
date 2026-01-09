@@ -30,6 +30,12 @@
 		"deliveryWithInstall": true,
 		"installationFree": false,
 		"pages": "$profile:main_pages",
+		"metadata": [
+			{
+				"name": "network_config",
+				"resource": "$profile:network_config"
+			}
+		],
 		"abilities": [
 			{
 				"name": "EntryAbility",
@@ -56,6 +62,16 @@
 			{
 				"name": "ohos.permission.INTERNET",
 				"reason": "$string:permission_internet_reason",
+				"usedScene": {
+					"abilities": [
+						"EntryAbility"
+					],
+					"when": "inuse"
+				}
+			},
+			{
+				"name": "ohos.permission.GET_NETWORK_INFO",
+				"reason": "$string:permission_network_info_reason",
 				"usedScene": {
 					"abilities": [
 						"EntryAbility"

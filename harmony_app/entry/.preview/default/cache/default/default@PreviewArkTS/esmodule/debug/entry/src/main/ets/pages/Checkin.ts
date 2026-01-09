@@ -258,7 +258,7 @@ class Checkin extends ViewPU {
             Row.backgroundColor('#FFFFFF');
         }, Row);
         this.observeComponentCreation2((elmtId, isInitialRender) => {
-            Image.create({ "id": 16777229, "type": 20000, params: [], "bundleName": "com.family.emotion", "moduleName": "entry" });
+            Image.create({ "id": 16777220, "type": 20000, params: [], "bundleName": "com.family.emotion", "moduleName": "entry" });
             Image.debugLine("entry/src/main/ets/pages/Checkin.ets(158:9)", "entry");
             Image.width(24);
             Image.height(24);
@@ -310,7 +310,7 @@ class Checkin extends ViewPU {
                         Column.width('100%');
                     }, Column);
                     this.observeComponentCreation2((elmtId, isInitialRender) => {
-                        Image.create({ "id": 16777232, "type": 20000, params: [], "bundleName": "com.family.emotion", "moduleName": "entry" });
+                        Image.create({ "id": 16777231, "type": 20000, params: [], "bundleName": "com.family.emotion", "moduleName": "entry" });
                         Image.debugLine("entry/src/main/ets/pages/Checkin.ets(187:13)", "entry");
                         Image.width(100);
                         Image.height(100);

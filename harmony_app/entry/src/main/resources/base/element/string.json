@@ -23,6 +23,10 @@
     {
       "name": "permission_media_reason",
       "value": "需要读写媒体文件以保存和上传照片"
+    },
+    {
+      "name": "permission_network_info_reason",
+      "value": "需要获取网络状态信息以确保数据同步"
     }
   ]
 }

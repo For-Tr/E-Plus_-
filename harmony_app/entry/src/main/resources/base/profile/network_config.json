@@ -1,0 +1,31 @@
+{
+  "network-security-config": {
+    "domain-config": [
+      {
+        "domains": [
+          {
+            "include-subdomains": true,
+            "name": "10.198.176.32"
+          },
+          {
+            "include-subdomains": true,
+            "name": "192.168.1.100"
+          },
+          {
+            "include-subdomains": true,
+            "name": "localhost"
+          },
+          {
+            "include-subdomains": true,
+            "name": "127.0.0.1"
+          },
+          {
+            "include-subdomains": true,
+            "name": "10.0.2.2"
+          }
+        ],
+        "cleartextTrafficPermitted": true
+      }
+    ]
+  }
+}

@@ -12,68 +12,76 @@
 			"name":	"app_name",
 			"id":	"0x01000002"
 		}, {
-			"type":	"string",
-			"name":	"EntryAbility_desc",
-			"id":	"0x01000003"
-		}, {
-			"type":	"string",
-			"name":	"EntryAbility_label",
-			"id":	"0x01000004"
-		}, {
-			"type":	"string",
-			"name":	"module_desc",
-			"id":	"0x01000005"
-		}, {
-			"type":	"string",
-			"name":	"permission_camera_reason",
-			"id":	"0x01000006"
-		}, {
-			"type":	"string",
-			"name":	"permission_internet_reason",
-			"id":	"0x01000007"
-		}, {
-			"type":	"string",
-			"name":	"permission_media_reason",
-			"id":	"0x01000008"
-		}, {
-			"type":	"profile",
-			"name":	"main_pages",
-			"id":	"0x01000009"
-		}, {
-			"type":	"media",
-			"name":	"icon",
-			"id":	"0x0100000A"
-		}, {
-			"type":	"color",
-			"name":	"start_window_background",
-			"id":	"0x0100000B"
-		}, {
 			"type":	"media",
 			"name":	"history_icon",
-			"id":	"0x0100000C"
+			"id":	"0x01000003"
 		}, {
 			"type":	"media",
 			"name":	"back",
-			"id":	"0x0100000D"
+			"id":	"0x01000004"
+		}, {
+			"type":	"string",
+			"name":	"EntryAbility_desc",
+			"id":	"0x01000005"
+		}, {
+			"type":	"string",
+			"name":	"EntryAbility_label",
+			"id":	"0x01000006"
+		}, {
+			"type":	"string",
+			"name":	"module_desc",
+			"id":	"0x01000007"
+		}, {
+			"type":	"string",
+			"name":	"permission_camera_reason",
+			"id":	"0x01000008"
+		}, {
+			"type":	"string",
+			"name":	"permission_internet_reason",
+			"id":	"0x01000009"
+		}, {
+			"type":	"string",
+			"name":	"permission_media_reason",
+			"id":	"0x0100000A"
+		}, {
+			"type":	"string",
+			"name":	"permission_network_info_reason",
+			"id":	"0x0100000B"
 		}, {
 			"type":	"media",
 			"name":	"empty",
-			"id":	"0x0100000E"
+			"id":	"0x0100000C"
 		}, {
 			"type":	"media",
 			"name":	"face_guide",
-			"id":	"0x0100000F"
+			"id":	"0x0100000D"
+		}, {
+			"type":	"profile",
+			"name":	"network_config",
+			"id":	"0x0100000E"
 		}, {
 			"type":	"media",
 			"name":	"checkin_icon",
-			"id":	"0x01000010"
+			"id":	"0x0100000F"
 		}, {
 			"type":	"media",
 			"name":	"default_avatar",
+			"id":	"0x01000010"
+		}, {
+			"type":	"profile",
+			"name":	"main_pages",
 			"id":	"0x01000011"
 		}, {
 			"type":	"media",
 			"name":	"face_icon",
 			"id":	"0x01000012"
+		}, {
+			"type":	"media",
+			"name":	"icon",
+			"id":	"0x01000013"
+		}, {
+			"type":	"color",
+			"name":	"start_window_background",
+			"id":	"0x01000014"
 		}]
 }

@@ -192,7 +192,7 @@ class History extends ViewPU {
             Row.backgroundColor('#FFFFFF');
         }, Row);
         this.observeComponentCreation2((elmtId, isInitialRender) => {
-            Image.create({ "id": 16777229, "type": 20000, params: [], "bundleName": "com.family.emotion", "moduleName": "entry" });
+            Image.create({ "id": 16777220, "type": 20000, params: [], "bundleName": "com.family.emotion", "moduleName": "entry" });
             Image.debugLine("entry/src/main/ets/pages/History.ets(101:9)", "entry");
             Image.width(24);
             Image.height(24);
@@ -530,7 +530,7 @@ class History extends ViewPU {
                         Column.backgroundColor('#F5F5F5');
                     }, Column);
                     this.observeComponentCreation2((elmtId, isInitialRender) => {
-                        Image.create({ "id": 16777230, "type": 20000, params: [], "bundleName": "com.family.emotion", "moduleName": "entry" });
+                        Image.create({ "id": 16777228, "type": 20000, params: [], "bundleName": "com.family.emotion", "moduleName": "entry" });
                         Image.debugLine("entry/src/main/ets/pages/History.ets(258:11)", "entry");
                         Image.width(150);
                         Image.height(150);

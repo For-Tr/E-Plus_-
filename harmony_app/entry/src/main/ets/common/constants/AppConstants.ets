@@ -3,7 +3,18 @@
  */
 
 // API配置
-export const API_BASE_URL = 'http://192.168.1.100:8000'  // 修改为你的服务器地址
+/**
+ * Mock数据模式开关
+ * - true: 使用Mock数据,适用于预览器调试,无需后端服务器
+ * - false: 连接真实后端API,需要确保后端服务运行且网络可达
+ * 
+ * 使用说明:
+ * 1. 预览器调试时设置为 true
+ * 2. 真机/模拟器测试时设置为 false
+ * 3. Mock数据配置位于 common/utils/MockData.ets
+ */
+export const USE_MOCK_DATA = false  // 是否使用Mock数据(预览器调试用)
+export const API_BASE_URL = 'http://10.198.176.32:8000'  // 修改为你的服务器地址
 export const API_TIMEOUT = 30000  // 30秒超时
 
 // API端点

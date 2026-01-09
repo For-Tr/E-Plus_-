@@ -13,6 +13,11 @@ import HttpUtil from "@bundle:com.family.emotion/entry/ets/common/utils/HttpUtil
 import StorageUtil from "@bundle:com.family.emotion/entry/ets/common/utils/StorageUtil";
 import CameraUtil from "@bundle:com.family.emotion/entry/ets/common/utils/CameraUtil";
 import { ApiEndpoints, StorageKeys, AppConfig, ErrorMessages } from "@bundle:com.family.emotion/entry/ets/common/constants/AppConstants";
+// 定义响应接口
+interface UploadResponse {
+    success: boolean;
+    error?: string;
+}
 class FaceRegister extends ViewPU {
     constructor(parent, params, __localStorage, elmtId = -1, paramsLambda = undefined, extraInfo) {
         super(parent, __localStorage, elmtId, extraInfo);
@@ -140,10 +145,7 @@ class FaceRegister extends ViewPU {
         this.isLoading = true;
         this.message = '正在注册人脸...';
         try {
-            const response: {
-                success: boolean;
-                error?: string;
-            } = await HttpUtil.uploadImage(ApiEndpoints.FACE_REGISTER, this.capturedImage, 'photo');
+            const response: UploadResponse = await HttpUtil.uploadImage(ApiEndpoints.FACE_REGISTER, this.capturedImage, 'photo');
             if (response.success) {
                 // 更新本地人脸注册状态
                 await StorageUtil.setBoolean(StorageKeys.IS_FACE_REGISTERED, true);
@@ -197,14 +199,14 @@ class FaceRegister extends ViewPU {
     initialRender() {
         this.observeComponentCreation2((elmtId, isInitialRender) => {
             Column.create();
-            Column.debugLine("entry/src/main/ets/pages/FaceRegister.ets(137:5)", "entry");
+            Column.debugLine("entry/src/main/ets/pages/FaceRegister.ets(143:5)", "entry");
             Column.width('100%');
             Column.height('100%');
         }, Column);
         this.observeComponentCreation2((elmtId, isInitialRender) => {
             // 顶部标题
             Row.create();
-            Row.debugLine("entry/src/main/ets/pages/FaceRegister.ets(139:7)", "entry");
+            Row.debugLine("entry/src/main/ets/pages/FaceRegister.ets(145:7)", "entry");
             // 顶部标题
             Row.width('100%');
             // 顶部标题
@@ -218,7 +220,7 @@ class FaceRegister extends ViewPU {
         }, Row);
         this.observeComponentCreation2((elmtId, isInitialRender) => {
             Text.create('人脸注册');
-            Text.debugLine("entry/src/main/ets/pages/FaceRegister.ets(140:9)", "entry");
+            Text.debugLine("entry/src/main/ets/pages/FaceRegister.ets(146:9)", "entry");
             Text.fontSize(20);
             Text.fontWeight(FontWeight.Medium);
             Text.fontColor('#333');
@@ -229,7 +231,7 @@ class FaceRegister extends ViewPU {
         this.observeComponentCreation2((elmtId, isInitialRender) => {
             // 主内容区域
             Column.create();
-            Column.debugLine("entry/src/main/ets/pages/FaceRegister.ets(152:7)", "entry");
+            Column.debugLine("entry/src/main/ets/pages/FaceRegister.ets(158:7)", "entry");
             // 主内容区域
             Column.layoutWeight(1);
             // 主内容区域
@@ -242,22 +244,22 @@ class FaceRegister extends ViewPU {
                     this.observeComponentCreation2((elmtId, isInitialRender) => {
                         // 说明页面
                         Column.create();
-                        Column.debugLine("entry/src/main/ets/pages/FaceRegister.ets(155:11)", "entry");
+                        Column.debugLine("entry/src/main/ets/pages/FaceRegister.ets(161:11)", "entry");
                         // 说明页面
                         Column.width('100%');
                         // 说明页面
                         Column.padding(30);
                     }, Column);
                     this.observeComponentCreation2((elmtId, isInitialRender) => {
-                        Image.create({ "id": 16777231, "type": 20000, params: [], "bundleName": "com.family.emotion", "moduleName": "entry" });
-                        Image.debugLine("entry/src/main/ets/pages/FaceRegister.ets(156:13)", "entry");
+                        Image.create({ "id": 16777229, "type": 20000, params: [], "bundleName": "com.family.emotion", "moduleName": "entry" });
+                        Image.debugLine("entry/src/main/ets/pages/FaceRegister.ets(162:13)", "entry");
                         Image.width(200);
                         Image.height(200);
                         Image.margin({ bottom: 30 });
                     }, Image);
                     this.observeComponentCreation2((elmtId, isInitialRender) => {
                         Text.create('首次使用需要注册人脸');
-                        Text.debugLine("entry/src/main/ets/pages/FaceRegister.ets(161:13)", "entry");
+                        Text.debugLine("entry/src/main/ets/pages/FaceRegister.ets(167:13)", "entry");
                         Text.fontSize(20);
                         Text.fontWeight(FontWeight.Medium);
                         Text.fontColor('#333');
@@ -266,13 +268,13 @@ class FaceRegister extends ViewPU {
                     Text.pop();
                     this.observeComponentCreation2((elmtId, isInitialRender) => {
                         Column.create();
-                        Column.debugLine("entry/src/main/ets/pages/FaceRegister.ets(167:13)", "entry");
+                        Column.debugLine("entry/src/main/ets/pages/FaceRegister.ets(173:13)", "entry");
                         Column.alignItems(HorizontalAlign.Start);
                         Column.margin({ bottom: 40 });
                     }, Column);
                     this.observeComponentCreation2((elmtId, isInitialRender) => {
                         Text.create('• 请确保光线充足');
-                        Text.debugLine("entry/src/main/ets/pages/FaceRegister.ets(168:15)", "entry");
+                        Text.debugLine("entry/src/main/ets/pages/FaceRegister.ets(174:15)", "entry");
                         Text.fontSize(16);
                         Text.fontColor('#666');
                         Text.margin({ bottom: 8 });
@@ -280,7 +282,7 @@ class FaceRegister extends ViewPU {
                     Text.pop();
                     this.observeComponentCreation2((elmtId, isInitialRender) => {
                         Text.create('• 正对摄像头,保持面部清晰');
-                        Text.debugLine("entry/src/main/ets/pages/FaceRegister.ets(173:15)", "entry");
+                        Text.debugLine("entry/src/main/ets/pages/FaceRegister.ets(179:15)", "entry");
                         Text.fontSize(16);
                         Text.fontColor('#666');
                         Text.margin({ bottom: 8 });
@@ -288,7 +290,7 @@ class FaceRegister extends ViewPU {
                     Text.pop();
                     this.observeComponentCreation2((elmtId, isInitialRender) => {
                         Text.create('• 摘下眼镜和口罩');
-                        Text.debugLine("entry/src/main/ets/pages/FaceRegister.ets(178:15)", "entry");
+                        Text.debugLine("entry/src/main/ets/pages/FaceRegister.ets(184:15)", "entry");
                         Text.fontSize(16);
                         Text.fontColor('#666');
                         Text.margin({ bottom: 8 });
@@ -296,7 +298,7 @@ class FaceRegister extends ViewPU {
                     Text.pop();
                     this.observeComponentCreation2((elmtId, isInitialRender) => {
                         Text.create('• 保持自然表情');
-                        Text.debugLine("entry/src/main/ets/pages/FaceRegister.ets(183:15)", "entry");
+                        Text.debugLine("entry/src/main/ets/pages/FaceRegister.ets(189:15)", "entry");
                         Text.fontSize(16);
                         Text.fontColor('#666');
                     }, Text);
@@ -304,7 +306,7 @@ class FaceRegister extends ViewPU {
                     Column.pop();
                     this.observeComponentCreation2((elmtId, isInitialRender) => {
                         Button.createWithLabel('开始拍照');
-                        Button.debugLine("entry/src/main/ets/pages/FaceRegister.ets(190:13)", "entry");
+                        Button.debugLine("entry/src/main/ets/pages/FaceRegister.ets(196:13)", "entry");
                         Button.width('80%');
                         Button.height(50);
                         Button.fontSize(18);
@@ -319,7 +321,7 @@ class FaceRegister extends ViewPU {
                     Button.pop();
                     this.observeComponentCreation2((elmtId, isInitialRender) => {
                         Button.createWithLabel('稍后注册');
-                        Button.debugLine("entry/src/main/ets/pages/FaceRegister.ets(202:13)", "entry");
+                        Button.debugLine("entry/src/main/ets/pages/FaceRegister.ets(208:13)", "entry");
                         Button.width('80%');
                         Button.height(50);
                         Button.fontSize(16);
@@ -342,13 +344,13 @@ class FaceRegister extends ViewPU {
                     this.observeComponentCreation2((elmtId, isInitialRender) => {
                         // 拍照中
                         Column.create();
-                        Column.debugLine("entry/src/main/ets/pages/FaceRegister.ets(220:11)", "entry");
+                        Column.debugLine("entry/src/main/ets/pages/FaceRegister.ets(226:11)", "entry");
                         // 拍照中
                         Column.width('100%');
                     }, Column);
                     this.observeComponentCreation2((elmtId, isInitialRender) => {
                         Text.create('请正对摄像头');
-                        Text.debugLine("entry/src/main/ets/pages/FaceRegister.ets(221:13)", "entry");
+                        Text.debugLine("entry/src/main/ets/pages/FaceRegister.ets(227:13)", "entry");
                         Text.fontSize(18);
                         Text.fontColor('#333');
                         Text.margin({ top: 50, bottom: 30 });
@@ -357,7 +359,7 @@ class FaceRegister extends ViewPU {
                     this.observeComponentCreation2((elmtId, isInitialRender) => {
                         // 相机预览区域占位
                         Column.create();
-                        Column.debugLine("entry/src/main/ets/pages/FaceRegister.ets(227:13)", "entry");
+                        Column.debugLine("entry/src/main/ets/pages/FaceRegister.ets(233:13)", "entry");
                         // 相机预览区域占位
                         Column.width(300);
                         // 相机预览区域占位
@@ -371,7 +373,7 @@ class FaceRegister extends ViewPU {
                     }, Column);
                     this.observeComponentCreation2((elmtId, isInitialRender) => {
                         Text.create('📷');
-                        Text.debugLine("entry/src/main/ets/pages/FaceRegister.ets(228:15)", "entry");
+                        Text.debugLine("entry/src/main/ets/pages/FaceRegister.ets(234:15)", "entry");
                         Text.fontSize(80);
                     }, Text);
                     Text.pop();
@@ -383,7 +385,7 @@ class FaceRegister extends ViewPU {
                             this.ifElseBranchUpdateFunction(0, () => {
                                 this.observeComponentCreation2((elmtId, isInitialRender) => {
                                     Text.create(this.message || '准备中...');
-                                    Text.debugLine("entry/src/main/ets/pages/FaceRegister.ets(238:15)", "entry");
+                                    Text.debugLine("entry/src/main/ets/pages/FaceRegister.ets(244:15)", "entry");
                                     Text.fontSize(16);
                                     Text.fontColor('#666');
                                     Text.margin({ top: 20 });
@@ -406,13 +408,13 @@ class FaceRegister extends ViewPU {
                     this.observeComponentCreation2((elmtId, isInitialRender) => {
                         // 照片预览和上传
                         Column.create();
-                        Column.debugLine("entry/src/main/ets/pages/FaceRegister.ets(248:11)", "entry");
+                        Column.debugLine("entry/src/main/ets/pages/FaceRegister.ets(254:11)", "entry");
                         // 照片预览和上传
                         Column.width('100%');
                     }, Column);
                     this.observeComponentCreation2((elmtId, isInitialRender) => {
                         Text.create('照片预览');
-                        Text.debugLine("entry/src/main/ets/pages/FaceRegister.ets(249:13)", "entry");
+                        Text.debugLine("entry/src/main/ets/pages/FaceRegister.ets(255:13)", "entry");
                         Text.fontSize(18);
                         Text.fontWeight(FontWeight.Medium);
                         Text.fontColor('#333');
@@ -422,7 +424,7 @@ class FaceRegister extends ViewPU {
                     this.observeComponentCreation2((elmtId, isInitialRender) => {
                         // 显示拍摄的照片
                         Image.create(`data:image/jpeg;base64,${this.capturedImage}`);
-                        Image.debugLine("entry/src/main/ets/pages/FaceRegister.ets(256:13)", "entry");
+                        Image.debugLine("entry/src/main/ets/pages/FaceRegister.ets(262:13)", "entry");
                         // 显示拍摄的照片
                         Image.width(300);
                         // 显示拍摄的照片
@@ -436,13 +438,13 @@ class FaceRegister extends ViewPU {
                     }, Image);
                     this.observeComponentCreation2((elmtId, isInitialRender) => {
                         Row.create();
-                        Row.debugLine("entry/src/main/ets/pages/FaceRegister.ets(263:13)", "entry");
+                        Row.debugLine("entry/src/main/ets/pages/FaceRegister.ets(269:13)", "entry");
                         Row.width('85%');
                         Row.justifyContent(FlexAlign.SpaceBetween);
                     }, Row);
                     this.observeComponentCreation2((elmtId, isInitialRender) => {
                         Button.createWithLabel('重新拍照');
-                        Button.debugLine("entry/src/main/ets/pages/FaceRegister.ets(264:15)", "entry");
+                        Button.debugLine("entry/src/main/ets/pages/FaceRegister.ets(270:15)", "entry");
                         Button.width('45%');
                         Button.height(50);
                         Button.fontSize(16);
@@ -458,7 +460,7 @@ class FaceRegister extends ViewPU {
                     Button.pop();
                     this.observeComponentCreation2((elmtId, isInitialRender) => {
                         Button.createWithLabel(this.isLoading ? '上传中...' : '确认上传');
-                        Button.debugLine("entry/src/main/ets/pages/FaceRegister.ets(277:15)", "entry");
+                        Button.debugLine("entry/src/main/ets/pages/FaceRegister.ets(283:15)", "entry");
                         Button.width('45%');
                         Button.height(50);
                         Button.fontSize(16);
@@ -478,7 +480,7 @@ class FaceRegister extends ViewPU {
                             this.ifElseBranchUpdateFunction(0, () => {
                                 this.observeComponentCreation2((elmtId, isInitialRender) => {
                                     Text.create(this.message);
-                                    Text.debugLine("entry/src/main/ets/pages/FaceRegister.ets(293:15)", "entry");
+                                    Text.debugLine("entry/src/main/ets/pages/FaceRegister.ets(299:15)", "entry");
                                     Text.fontSize(14);
                                     Text.fontColor('#FF0000');
                                     Text.margin({ top: 15 });

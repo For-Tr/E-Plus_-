@@ -2,11 +2,14 @@
  * 本地存储工具类
  */
 import preferences from '@ohos.data.preferences'
+import { USE_MOCK_DATA } from '../constants/AppConstants'
 
 class StorageUtil {
   private static instance: StorageUtil
   private preferences: preferences.Preferences | null = null
   private readonly STORE_NAME = 'family_emotion_prefs'
+  // Mock模式下使用内存存储
+  private mockStorage: Map<string, string | boolean> = new Map()
 
   private constructor() {}
 
@@ -34,17 +37,22 @@ class StorageUtil {
    */
   async setString(key: string, value: string): Promise<boolean> {
     try {
-      if (!this.preferences) {
-        console.error('[StorageUtil] Preferences not initialized')
-        return false
+      // Mock模式:使用内存存储
+      if (USE_MOCK_DATA || !this.preferences) {
+        this.mockStorage.set(key, value)
+        console.info(`[StorageUtil] Mock saved: ${key}`)
+        return true
       }
+      
       await this.preferences.put(key, value)
       await this.preferences.flush()
       console.info(`[StorageUtil] Saved: ${key}`)
       return true
     } catch (error) {
       console.error(`[StorageUtil] Save failed: ${key}`, JSON.stringify(error))
-      return false
+      // 失败时降级到Mock存储
+      this.mockStorage.set(key, value)
+      return true
     }
   }
 
@@ -53,15 +61,19 @@ class StorageUtil {
    */
   async getString(key: string, defaultValue: string = ''): Promise<string> {
     try {
-      if (!this.preferences) {
-        console.error('[StorageUtil] Preferences not initialized')
-        return defaultValue
+      // Mock模式:使用内存存储
+      if (USE_MOCK_DATA || !this.preferences) {
+        const value = this.mockStorage.get(key)
+        return (value as string) || defaultValue
       }
+      
       const value = await this.preferences.get(key, defaultValue)
       return value as string
     } catch (error) {
       console.error(`[StorageUtil] Get failed: ${key}`, JSON.stringify(error))
-      return defaultValue
+      // 失败时从Mock存储读取
+      const value = this.mockStorage.get(key)
+      return (value as string) || defaultValue
     }
   }
 
@@ -99,15 +111,21 @@ class StorageUtil {
    */
   async setBoolean(key: string, value: boolean): Promise<boolean> {
     try {
-      if (!this.preferences) {
-        return false
+      // Mock模式:使用内存存储
+      if (USE_MOCK_DATA || !this.preferences) {
+        this.mockStorage.set(key, value)
+        console.info(`[StorageUtil] Mock saved boolean: ${key}`)
+        return true
       }
+      
       await this.preferences.put(key, value)
       await this.preferences.flush()
       return true
     } catch (error) {
       console.error(`[StorageUtil] Save boolean failed: ${key}`, JSON.stringify(error))
-      return false
+      // 失败时降级到Mock存储
+      this.mockStorage.set(key, value)
+      return true
     }
   }
 
@@ -116,14 +134,18 @@ class StorageUtil {
    */
   async getBoolean(key: string, defaultValue: boolean = false): Promise<boolean> {
     try {
-      if (!this.preferences) {
-        return defaultValue
+      // Mock模式:使用内存存储
+      if (USE_MOCK_DATA || !this.preferences) {
+        const value = this.mockStorage.get(key)
+        return (value as boolean) ?? defaultValue
       }
+      
       const value = await this.preferences.get(key, defaultValue)
       return value as boolean
     } catch (error) {
       console.error(`[StorageUtil] Get boolean failed: ${key}`, JSON.stringify(error))
-      return defaultValue
+      const value = this.mockStorage.get(key)
+      return (value as boolean) ?? defaultValue
     }
   }
 

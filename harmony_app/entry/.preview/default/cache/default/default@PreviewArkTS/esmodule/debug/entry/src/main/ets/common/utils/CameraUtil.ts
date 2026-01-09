@@ -1,4 +1,5 @@
 import type { BusinessError } from "@ohos:base";
+import { USE_MOCK_DATA } from "@bundle:com.family.emotion/entry/ets/common/constants/AppConstants";
 class CameraUtil {
     private static instance: CameraUtil | null = null;
     private constructor() { }
@@ -22,6 +23,12 @@ class CameraUtil {
     async takePictureAsBase64(): Promise<string | null> {
         try {
             console.info('[CameraUtil] Taking picture...');
+            // Mock模式：返回模拟的Base64图片数据
+            if (USE_MOCK_DATA) {
+                console.info('[CameraUtil] Using MOCK photo data');
+                // 返回一个1x1透明PNG的Base64编码（用于预览器调试）
+                return 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==';
+            }
             // 这里应该使用相机组件拍照
             // 目前返回null，需要在页面中使用Camera组件实现
             console.warn('[CameraUtil] Please use Camera component in page for actual photo capture');
