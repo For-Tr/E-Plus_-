@@ -1,5 +1,4 @@
 {
-  "modelVersion": "6.0.1",
   "name": "family-emotion-app",
   "version": "1.0.0",
   "description": "Family Emotion Check-in System",
@@ -8,7 +7,7 @@
   "license": "ISC",
   "dependencies": {},
   "devDependencies": {
-    "@ohos/hvigor-ohos-plugin": "1.4.6",
-    "@ohos/hvigor": "1.4.6"
+    "@ohos/hvigor-ohos-plugin": "5.0.6",
+    "@ohos/hvigor": "5.0.6"
   }
 }
